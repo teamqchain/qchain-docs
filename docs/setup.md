@@ -21,7 +21,7 @@ sudo systemctl enable --now docker
 sudo usermod -aG docker $USER
 # (Note: log out and log back in or run 'newgrp docker' for group permissions to take effect)
 
-# 3. Install Node.js 20.x & npm (required for Fabric Chaincode)
+# 3. Install Node.js 20.x & npm (only for the chaincode unit tests)
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 
@@ -46,7 +46,7 @@ sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 sudo systemctl enable --now docker
 sudo usermod -aG docker $USER
 
-# 3. Install Node.js & npm (required for Fabric Chaincode)
+# 3. Install Node.js & npm (only for the chaincode unit tests)
 sudo dnf install -y nodejs npm
 
 # 4. Install MySQL Server (the VM runs MySQL 8.x, not MariaDB)
@@ -56,7 +56,7 @@ sudo systemctl enable --now mysqld
 
 ---
 
-### Step 1C: Install IPFS (Kubo) & Fabric Binaries (Universal)
+### Step 1C: Install IPFS (Kubo) (Universal)
 
 Run these commands on either OS. Architecture (`x86_64` vs `arm64`) is detected automatically:
 
@@ -77,19 +77,14 @@ tar -xvzf "kubo_v0.32.1_linux-${KUBO_ARCH}.tar.gz"
 cd kubo && sudo bash install.sh && cd ..
 rm -rf kubo "kubo_v0.32.1_linux-${KUBO_ARCH}.tar.gz"
 
-# 2. Install Hyperledger Fabric Binaries (auto-detects architecture)
-curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh | bash -s -- binary
-# Add downloaded binaries to PATH
-export PATH=$PATH:$PWD/bin
-echo "export PATH=\$PATH:$PWD/bin" >> ~/.bashrc
-
-# 3. Verify installations
+# 2. Verify installations
 docker ps
-peer version
 mysql --version
 ipfs --version
 node -v
 ```
+
+The Fabric tools run from Docker images, so the host needs no Fabric binaries (see section 6).
 
 ## 2. Clone Repository
 
@@ -107,9 +102,6 @@ Since the Fabric CLI scripts communicate with the CA and peer services via custo
 sudo tee -a /etc/hosts <<EOF
 
 # QChain Fabric Domains
-127.0.0.1 ca.government.uae.com
-127.0.0.1 ca.general.uae.com
-127.0.0.1 ca.orderer.example.com
 127.0.0.1 peer0.government.uae.com
 127.0.0.1 peer0.general.uae.com
 127.0.0.1 orderer0.orderer.example.com
@@ -143,109 +135,45 @@ bash qchain-network/scripts/setup-ipfs-service.sh
 
 ## 6. Hyperledger Fabric Network Setup
 
-This section completely replaces the incomplete manual steps in the root README.
+Every Fabric identity in this network uses ML-DSA-44. [qchain-network/README.md](../qchain-network/README.md) explains the design, the ports, the limits and the ledger reset.
 
-### Start CAs and Generate Crypto Material
+### Load the Images and Install the CLI Wrappers
+
+The network runs from five `qchain-pqc/*` Docker images, built from the team's Fabric and Fabric CA forks. Load them first and check with `docker images 'qchain-pqc/*'`. The Fabric CLIs run from the `qchain-pqc/tools` image through wrappers:
+
 ```bash
-cd qchain-network/docker
-# Start the Certificate Authorities
-docker compose -f docker-compose-ca.yaml up -d
-sleep 5 # Wait for CAs to start
-
-# Generate all MSP crypto material via Fabric CA
-cd ../scripts
-# IMPORTANT: Before running, update the hardcoded path in env scripts
-sed -i "s|NETWORK_ROOT=.*|NETWORK_ROOT=\"$REPO_ROOT/qchain-network\"|g" env-gov.sh
-sed -i "s|NETWORK_ROOT=.*|NETWORK_ROOT=\"$REPO_ROOT/qchain-network\"|g" env-gen.sh
-sed -i "s|NETWORK_ROOT=.*|NETWORK_ROOT=\"$REPO_ROOT/qchain-network\"|g" registerEnroll.sh
-
-bash registerEnroll.sh
+bash qchain-network/scripts/qchain-pqc-cli.sh install ~/pqc-tools/bin
 ```
 
-### Start Fabric Nodes
+### Build the Network
+
 ```bash
-cd ../docker
-docker compose -f docker-compose.yaml up -d orderer0.orderer.example.com peer0.government.uae.com peer0.general.uae.com couchdb0
-cd ../..
+cd qchain-network
+bash scripts/generate-crypto-pqc.sh     # ML-DSA-44 crypto material, CA files, ECDSA CA server TLS
+bash scripts/start-fabric-network.sh    # CAs, orderer, peers
+sleep 10
+bash scripts/create-channel-pqc.sh      # channel mychannel: genesis, orderer join, peer joins
+bash scripts/registerEnroll.sh          # CA admins, issuer1 and verifier1 at GeneralCA, wallets
+bash scripts/deployCC-pqc.sh            # chaincode qchaincode 2.0 as a service
+cd ..
 ```
 
-### Create and Join Channel (Using OSNAdmin)
-Since this project's orderer operates without a system channel (`ORDERER_GENERAL_BOOTSTRAPMETHOD=none`), we must use `osnadmin` instead of the deprecated `peer channel create` command.
+The containers use Docker's `unless-stopped` restart policy, so they come back by themselves after a Docker or machine restart.
+
+### Check the Chaincode
 
 ```bash
-# 1. Create channel genesis block
-export FABRIC_CFG_PATH=$REPO_ROOT/qchain-network/config
-configtxgen -profile TwoOrgsChannel -channelID mychannel -outputBlock $REPO_ROOT/qchain-network/channel-artifacts/mychannel.block
+# Smoke test: an empty batch read must answer {"holders":{}}
+( . qchain-network/scripts/env-gov.sh; "$PEER" chaincode query -C mychannel -n qchaincode -c '{"Args":["getHolders","[]","summary"]}' )
 
-# 2. Join Orderer to the channel
-export ORDERER_ADMIN_TLS_SIGNCLIENTCERT=$REPO_ROOT/qchain-network/crypto-material/ordererOrganizations/orderer.example.com/orderers/orderer0.orderer.example.com/tls/server.crt
-export ORDERER_ADMIN_TLS_PRIVATEKEY=$REPO_ROOT/qchain-network/crypto-material/ordererOrganizations/orderer.example.com/orderers/orderer0.orderer.example.com/tls/server.key
-export ORDERER_CA=$REPO_ROOT/qchain-network/crypto-material/ordererOrganizations/orderer.example.com/orderers/orderer0.orderer.example.com/tls/ca.crt
-
-osnadmin channel join --channelID mychannel \
-  --config-block $REPO_ROOT/qchain-network/channel-artifacts/mychannel.block \
-  -o localhost:7053 \
-  --ca-file $ORDERER_CA \
-  --client-cert $ORDERER_ADMIN_TLS_SIGNCLIENTCERT \
-  --client-key $ORDERER_ADMIN_TLS_PRIVATEKEY
-
-# 3. Join Peers to the channel
-# Government Peer
-source $REPO_ROOT/qchain-network/scripts/env-gov.sh
-peer channel join -b $REPO_ROOT/qchain-network/channel-artifacts/mychannel.block
-
-# General Peer
-source $REPO_ROOT/qchain-network/scripts/env-gen.sh
-peer channel join -b $REPO_ROOT/qchain-network/channel-artifacts/mychannel.block
-```
-
-### Deploy Chaincode
-
-> [!NOTE]
-> **Chaincode v2.0 needs an empty ledger.** v2.0 stores a signed commitment per credential (no plaintext
-> `Info`), takes new `issueCredential` arguments and removes `verifyCredential` / `setCID` /
-> `getCredentialsByHolder`, so a network still running an earlier chaincode version needs a full ledger
-> reset (back up MySQL, tear down and recreate the channel, redeploy chaincode as a fresh sequence 1)
-> before following this section as version 2.0, sequence 1.
-
-```bash
-# 1. Install dependencies, run the chaincode unit tests, and package
-export REPO_ROOT=$(pwd)
-export ORDERER_CA=$REPO_ROOT/qchain-network/crypto-material/ordererOrganizations/orderer.example.com/orderers/orderer0.orderer.example.com/tls/ca.crt
-
-cd $REPO_ROOT/qchain-network/chaincode
+# Unit tests against an in-memory ledger (Node 18+); all tests must pass
+cd qchain-network/chaincode
 npm install
-npm test            # node:test suite against an in-memory ledger (Node 18+) — all tests must pass
+npm test
 cd ../..
-
-source $REPO_ROOT/qchain-network/scripts/env-gov.sh
-peer lifecycle chaincode package qchaincode_2.0.tar.gz --path $REPO_ROOT/qchain-network/chaincode --lang node --label qchaincode_2.0
-
-# 2. Install on Government peer
-peer lifecycle chaincode install qchaincode_2.0.tar.gz
-
-# Find package ID
-export CC_PACKAGE_ID=$(peer lifecycle chaincode queryinstalled | grep qchaincode_2.0 | awk '{print $3}' | sed 's/,//')
-
-# Approve for Government
-peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer0.orderer.example.com --channelID mychannel --name qchaincode --version 2.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
-
-# 3. Install and Approve on General peer
-source $REPO_ROOT/qchain-network/scripts/env-gen.sh
-peer lifecycle chaincode install qchaincode_2.0.tar.gz
-peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer0.orderer.example.com --channelID mychannel --name qchaincode --version 2.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
-
-# 4. Commit chaincode (sequence 1)
-peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer0.orderer.example.com --channelID mychannel --name qchaincode --version 2.0 --sequence 1 --tls --cafile $ORDERER_CA \
-  --peerAddresses localhost:7051 --tlsRootCertFiles $REPO_ROOT/qchain-network/crypto-material/peerOrganizations/government.uae.com/peers/peer0.government.uae.com/tls/ca.crt \
-  --peerAddresses localhost:9051 --tlsRootCertFiles $REPO_ROOT/qchain-network/crypto-material/peerOrganizations/general.uae.com/peers/peer0.general.uae.com/tls/ca.crt
-
-# 5. Smoke test — an empty batch read must answer {"holders":{}}
-peer chaincode query -C mychannel -n qchaincode -c '{"Args":["getHolders","[]","summary"]}'
 ```
 
-Future chaincode changes on this network are upgrades: re-package with a new label/version and approve +
-commit with `--sequence 2`, `3`, … on both peers, exactly like steps 1–4.
+The chaincode runs from the `qchain-pqc/ccaas-qchain` image. A chaincode change means rebuilding that image and upgrading the chaincode definition with the next sequence on both peers. This has not been done on this network yet.
 
 ## 7. Backend (off-chain Go API) Setup
 
@@ -274,6 +202,8 @@ VERIFIER_ORG=general
 VERIFIER_IDENTITY=verifier1
 MYSQL_DSN=qchain_user:password@tcp(127.0.0.1:3306)/qchain_db
 NETWORK_ROOT=/qchain-network
+GOV_PEER_ENDPOINT=peer0.government.uae.com:27051
+GEN_PEER_ENDPOINT=peer0.general.uae.com:29051
 CHANNEL_NAME=mychannel
 CHAINCODE_NAME=qchaincode
 IPFS_HOST=127.0.0.1:5001
