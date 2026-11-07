@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions for setting up the entire QChain backend and blockchain infrastructure on **Ubuntu** (20.04/22.04/24.04) or **Fedora** Linux, on both **x86_64 (AMD/Intel)** and **ARM64 (Apple Silicon M-series via UTM / AWS Graviton)** architectures.
 
+> **ARM64:** the `qchain-pqc/*` Fabric images in section 6 are built for x86_64, so an ARM64 machine needs its own build of them.
+
 ---
 
 ## 1. Prerequisites
@@ -96,7 +98,7 @@ export REPO_ROOT=$PWD
 
 ## 3. Configure Local Hosts Mappings (/etc/hosts)
 
-Since the Fabric CLI scripts communicate with the CA and peer services via custom domain names on `localhost`, you must map these hostnames to `127.0.0.1` in `/etc/hosts` on your Fedora VM:
+The Fabric CLIs and the backend reach the orderer and peers by name, so map these hostnames to `127.0.0.1` in `/etc/hosts`. The CAs are reached at `https://localhost:<port>`, so they need no entry:
 
 ```bash
 sudo tee -a /etc/hosts <<EOF
@@ -135,11 +137,21 @@ bash qchain-network/scripts/setup-ipfs-service.sh
 
 ## 6. Hyperledger Fabric Network Setup
 
-Every Fabric identity in this network uses ML-DSA-44. [qchain-network/README.md](../qchain-network/README.md) explains the design, the ports, the limits and the ledger reset.
+QChain's network uses a post-quantum Membership Service Provider (MSP): the orderer, peers, admins and application users all hold ML-DSA-44 identities, and the peer and orderer TLS certificates are ML-DSA-44 too. [qchain-network/README.md](../qchain-network/README.md) explains how it works, the ports, the limits and the ledger reset.
 
 ### Load the Images and Install the CLI Wrappers
 
-The network runs from five `qchain-pqc/*` Docker images, built from the team's Fabric and Fabric CA forks. Load them first and check with `docker images 'qchain-pqc/*'`. The Fabric CLIs run from the `qchain-pqc/tools` image through wrappers:
+Stock `hyperledger/*` images can't run ML-DSA identities, so the network runs from five images built from the team's Fabric and Fabric CA forks:
+
+| Image | Role |
+|---|---|
+| `qchain-pqc/orderer:e472b4ea` | Orderer |
+| `qchain-pqc/peer:e472b4ea` | Peers, including the chaincode-as-a-service builder |
+| `qchain-pqc/fabric-ca-server:e82caf43` | Fabric CA, one per organisation |
+| `qchain-pqc/ccaas-qchain:2.0` | QChaincode, run as a service |
+| `qchain-pqc/tools:20261105` | CLIs: `peer`, `osnadmin`, `fabric-ca-client`, `cryptogen`, `configtxgen`, `mkwallet-g1` |
+
+Load them first and check with `docker images 'qchain-pqc/*'`. The CLIs run from the tools image through wrappers:
 
 ```bash
 bash qchain-network/scripts/qchain-pqc-cli.sh install ~/pqc-tools/bin
@@ -159,6 +171,15 @@ cd ..
 ```
 
 The containers use Docker's `unless-stopped` restart policy, so they come back by themselves after a Docker or machine restart.
+
+To empty the ledger later, follow the reset in [qchain-network/README.md](../qchain-network/README.md#clean-ledger-reset). The ledger and MySQL must always be cleared together.
+
+### Check That the Identities Are ML-DSA-44
+
+```bash
+# Older OpenSSL prints the OID 2.16.840.1.101.3.4.3.17; newer versions print ML-DSA-44. Nothing else should appear.
+find qchain-network/crypto-material -path '*/signcerts/*.pem' -exec openssl x509 -in {} -noout -text \; | grep 'Public Key Algorithm' | sort | uniq -c
+```
 
 ### Check the Chaincode
 
@@ -209,6 +230,7 @@ CHAINCODE_NAME=qchaincode
 IPFS_HOST=127.0.0.1:5001
 SERVER_PORT=3000
 ENV
+chmod 600 offchain/.env     # it holds the private key
 
 # 4. Open offchain/.env in your text editor and insert the hex keys you generated in step 2
 
@@ -411,8 +433,8 @@ How they behave:
 
 - **They deploy from the VM's own checkout** at `~/Desktop/QChain/QChain-PQC-blockchain`, running
   `git pull --ff-only` there first. They don't use a separate runner checkout, because the backend
-  needs gitignored runtime files that only exist in this one (`offchain/.env`, `crypto-material/`,
-  `wallet/`, `connection/`).
+  needs gitignored runtime files that only exist in this one (`offchain/.env`, and
+  `crypto-material/` and `wallet/` under `qchain-network/`).
 - A deploy is refused if that checkout isn't on `main`, or if its tracked files were edited by hand.
 - **Rollback:** before each build, the running image is kept as `:previous`. If the new container
   fails its health check, `:previous` is restarted and the run is marked failed.
