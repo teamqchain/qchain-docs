@@ -3,6 +3,13 @@
 This guide provides step-by-step instructions for setting up the entire QChain backend and blockchain infrastructure on **Ubuntu** (20.04/22.04/24.04) or **Fedora** Linux, on both **x86_64 (AMD/Intel)** and **ARM64 (Apple Silicon M-series via UTM / AWS Graviton)** architectures.
 
 > **ARM64:** the `qchain-pqc/*` Fabric images in section 6 are built for x86_64, so an ARM64 machine needs its own build of them.
+>
+> **Repositories.** Since 9 November 2026 the code lives in separate repositories under `teamqchain`:
+> [qchain-network](https://github.com/teamqchain/qchain-network) (the Fabric network),
+> [qchain-backend](https://github.com/teamqchain/qchain-backend) (the Go API, database schema, gateway and CI/CD),
+> [qchain-portal](https://github.com/teamqchain/qchain-portal), [qchain-wallet](https://github.com/teamqchain/qchain-wallet)
+> and [qchain-shared](https://github.com/teamqchain/qchain-shared) (the Flutter apps). This guide sets up the server side
+> from the first two, cloned side by side.
 
 ---
 
@@ -88,12 +95,16 @@ node -v
 
 The Fabric tools run from Docker images, so the host needs no Fabric binaries (see section 6).
 
-## 2. Clone Repository
+## 2. Clone the Repositories
+
+The backend reads the network's wallets and certificates from the `qchain-network` clone **next to** it, so clone both
+into one folder (on the project VM: `~/Desktop/QChain/teamqchain`):
 
 ```bash
-git clone https://github.com/teamqchain/QChain-PQC-blockchain.git
-cd QChain-PQC-blockchain
-export REPO_ROOT=$PWD
+mkdir -p ~/teamqchain && cd ~/teamqchain
+git clone https://github.com/teamqchain/qchain-network.git
+git clone https://github.com/teamqchain/qchain-backend.git
+export NET=$PWD/qchain-network API=$PWD/qchain-backend
 ```
 
 ## 3. Configure Local Hosts Mappings (/etc/hosts)
@@ -125,19 +136,19 @@ sudo mysql -e "GRANT ALL PRIVILEGES ON qchain_db.* TO 'qchain_user'@'%';"
 sudo mysql -e "FLUSH PRIVILEGES;"
 
 # Seed the schema (includes every column the backend needs — no separate migrations to run)
-sudo mysql qchain_db < qchain-network/scripts/schema.sql
+sudo mysql qchain_db < "$API/db/schema.sql"
 ```
 
 ## 5. IPFS Setup
 
 ```bash
 ipfs init
-bash qchain-network/scripts/setup-ipfs-service.sh
+bash "$API/scripts/setup-ipfs-service.sh"
 ```
 
 ## 6. Hyperledger Fabric Network Setup
 
-QChain's network uses a post-quantum Membership Service Provider (MSP): the orderer, peers, admins and application users all hold ML-DSA-44 identities, and the peer and orderer TLS certificates are ML-DSA-44 too. [qchain-network/README.md](../qchain-network/README.md) explains how it works, the ports, the limits and the ledger reset.
+QChain's network uses a post-quantum Membership Service Provider (MSP): the orderer, peers, admins and application users all hold ML-DSA-44 identities, and the peer and orderer TLS certificates are ML-DSA-44 too. The [qchain-network README](https://github.com/teamqchain/qchain-network#readme) explains how it works, the ports, the limits and the ledger reset.
 
 ### Load the Images and Install the CLI Wrappers
 
@@ -154,66 +165,64 @@ Stock `hyperledger/*` images can't run ML-DSA identities, so the network runs fr
 Load them first and check with `docker images 'qchain-pqc/*'`. The CLIs run from the tools image through wrappers:
 
 ```bash
-bash qchain-network/scripts/qchain-pqc-cli.sh install ~/pqc-tools/bin
+bash "$NET/scripts/qchain-pqc-cli.sh" install ~/pqc-tools/bin
 ```
 
 ### Build the Network
 
 ```bash
-cd qchain-network
+cd "$NET"
 bash scripts/generate-crypto-pqc.sh     # ML-DSA-44 crypto material, CA files, ECDSA CA server TLS
 bash scripts/start-fabric-network.sh    # CAs, orderer, peers
 sleep 10
 bash scripts/create-channel-pqc.sh      # channel mychannel: genesis, orderer join, peer joins
 bash scripts/registerEnroll.sh          # CA admins, issuer1 and verifier1 at GeneralCA, wallets
 bash scripts/deployCC-pqc.sh            # chaincode qchaincode 2.0 as a service
-cd ..
 ```
 
 The containers use Docker's `unless-stopped` restart policy, so they come back by themselves after a Docker or machine restart.
 
-To empty the ledger later, follow the reset in [qchain-network/README.md](../qchain-network/README.md#clean-ledger-reset). The ledger and MySQL must always be cleared together.
+To empty the ledger later, follow the reset in the [qchain-network README](https://github.com/teamqchain/qchain-network#clean-ledger-reset). The ledger and MySQL must always be cleared together.
 
 ### Check That the Identities Are ML-DSA-44
 
 ```bash
 # Older OpenSSL prints the OID 2.16.840.1.101.3.4.3.17; newer versions print ML-DSA-44. Nothing else should appear.
-find qchain-network/crypto-material -path '*/signcerts/*.pem' -exec openssl x509 -in {} -noout -text \; | grep 'Public Key Algorithm' | sort | uniq -c
+find "$NET/crypto-material" -path '*/signcerts/*.pem' -exec openssl x509 -in {} -noout -text \; | grep 'Public Key Algorithm' | sort | uniq -c
 ```
 
 ### Check the Chaincode
 
 ```bash
 # Smoke test: an empty batch read must answer {"holders":{}}
-( . qchain-network/scripts/env-gov.sh; "$PEER" chaincode query -C mychannel -n qchaincode -c '{"Args":["getHolders","[]","summary"]}' )
+( . "$NET/scripts/env-gov.sh"; "$PEER" chaincode query -C mychannel -n qchaincode -c '{"Args":["getHolders","[]","summary"]}' )
 
-# Unit tests against an in-memory ledger (Node 18+); all tests must pass
-cd qchain-network/chaincode
+# Unit tests against an in-memory ledger; all tests must pass
+cd "$NET/chaincode"
 npm install
-npm test
-cd ../..
+node --test
 ```
 
 The chaincode runs from the `qchain-pqc/ccaas-qchain` image. A chaincode change means rebuilding that image and upgrading the chaincode definition with the next sequence on both peers. This has not been done on this network yet.
 
-## 7. Backend (off-chain Go API) Setup
+## 7. Backend (Go API) Setup
 
 Because `liboqs-go` requires compiling the C library `liboqs` with CGo, we build the Docker image first (which compiles `liboqs` inside Docker automatically), and then run `keygen` from the Docker image.
 
 ```bash
-cd $REPO_ROOT
+cd "$API"
 
 # 1. Run the Go unit tests in the image's builder stage, then build the image
 #    (first build takes ~15-20 mins to compile liboqs; go vet also runs during the build)
-docker build --target builder -t qchain-api:test offchain
+docker build --target builder -f docker/Dockerfile -t qchain-api:test .
 docker run --rm qchain-api:test go test -count=1 ./...
-bash offchain/docker-build.sh
+bash docker/docker-build.sh
 
 # 2. Generate organisation ML-DSA-44 keys via Docker
 docker run --rm qchain-api:latest keygen
 
-# 3. Create the .env configuration file
-cat > offchain/.env <<'ENV'
+# 3. Create the .env configuration file (repository root; .env.example is the full template)
+cat > .env <<'ENV'
 ISSUER_PRIVATE_KEY_HEX=<insert-private-key-hex-here>
 ISSUER_PUBLIC_KEY_HEX=<insert-public-key-hex-here>
 ISSUER_ORG_ID=GeneralMSP
@@ -230,15 +239,15 @@ CHAINCODE_NAME=qchaincode
 IPFS_HOST=127.0.0.1:5001
 SERVER_PORT=3000
 ENV
-chmod 600 offchain/.env     # it holds the private key
+chmod 600 .env     # it holds the private key
 
-# 4. Open offchain/.env in your text editor and insert the hex keys you generated in step 2
+# 4. Open .env in your text editor and insert the hex keys you generated in step 2
 
-# 5. Start the backend container
-bash offchain/docker-run.sh
+# 5. Start the backend container (it mounts ../qchain-network read-only)
+bash docker/docker-run.sh
 
 # 6. Seed the demo holders on Fabric via the API
-bash qchain-network/scripts/setup-demo.sh http://localhost:3000
+bash scripts/setup-demo.sh http://localhost:3000
 
 # 7. (Track H) Register holder public keys (wallet activation)
 # The QWallet mobile app generates keys locally on-device and binds the public keys on-chain via
@@ -260,12 +269,12 @@ bash tests/e2e_api_test.sh http://localhost:3000
 
 > **This is for a temporary, single-session tunnel straight to your local backend** (e.g. quickly
 > sharing `localhost:3000` with a frontend developer while you're both online). It is not how the
-> live system is actually exposed — the production deployment (see the root [README.md](../README.md)
-> "Live Demo" and [web-gateway/README.md](../web-gateway/README.md)) uses a **Tailscale Funnel**
+> live system is actually exposed — the production deployment (see the
+> [qchain-backend gateway README](https://github.com/teamqchain/qchain-backend/tree/main/gateway)) uses a **Tailscale Funnel**
 > instead, specifically because a Cloudflare quick tunnel's URL is random and doesn't survive a
 > restart, whereas Tailscale Funnel gives a permanent `*.ts.net` address that comes back automatically
 > after a reboot. If you want a stable, shareable link (not just a one-off dev session), follow
-> `bash qchain-network/scripts/setup-tailscale-funnel.sh` instead, as described in the root README's
+> `bash "$API/gateway/setup-tailscale-funnel.sh"` instead, as described in the qchain-backend README's
 > "Public access" step.
 
 To instantly share the backend API with your frontend developer without creating a Cloudflare account or buying a domain, you can use Cloudflare's free Quick Tunnel:
@@ -297,16 +306,17 @@ Give `https://random-words-here.trycloudflare.com` to your frontend developer to
 
 ## 9. Frontend Setup
 
-The repository includes:
-- **QPortal (`UI_WebApp`)**: a Flutter **web** app for Issuers, Verifiers, and IT Administrators.
-- **QWallet (`UI_App`)**: a Flutter **mobile-only** app for credential holders to view, store, and
+The two apps have their own repositories, and both use the shared package in
+[qchain-shared](https://github.com/teamqchain/qchain-shared):
+- **QPortal ([qchain-portal](https://github.com/teamqchain/qchain-portal))**: a Flutter **web** app for Issuers, Verifiers, and IT Administrators.
+- **QWallet ([qchain-wallet](https://github.com/teamqchain/qchain-wallet))**: a Flutter **mobile-only** app for credential holders to view, store, and
   present credentials. It cannot run in a browser — its ML-KEM-768/ML-DSA-44 key pair is generated and
   held only on-device (a browser build would mean a different key pair per browser/device, breaking the
   one-key-pair-per-holder model), and its PQC library (`liboqs`) uses `dart:ffi`, which doesn't exist in
   a browser at all. Run it on a device/emulator with `flutter run`, or build an install
   (`flutter build apk` / `flutter build ios`).
 
-You can run QPortal either locally on your development machine using Flutter or directly via Docker.
+QPortal's public deployment is on Vercel (see the qchain-portal README). For development, run the apps with Flutter:
 
 ---
 
@@ -320,13 +330,13 @@ If the backend is running locally on port 3000, simply run:
 
 ```bash
 # Run QPortal (Issuer/Verifier/Admin Portal)
-cd UI_WebApp
+git clone https://github.com/teamqchain/qchain-portal.git && cd qchain-portal
 flutter pub get
 flutter run -d chrome
 
 # In a separate terminal, run QWallet (Holder App) on a connected device/emulator —
 # QWallet cannot target chrome/web, see the note above.
-cd UI_App
+git clone https://github.com/teamqchain/qchain-wallet.git && cd qchain-wallet
 flutter pub get
 flutter devices        # pick a device id
 flutter run -d <device-id>
@@ -337,20 +347,18 @@ flutter run -d <device-id>
 If connecting to a remote backend exposed by Cloudflare Tunnel, inject the URL at startup:
 
 ```bash
-# Run QPortal
-cd UI_WebApp
+# Run QPortal (in the qchain-portal clone)
 flutter pub get
 flutter run -d chrome --dart-define=API_BASE_URL=https://<your-tunnel-name>.trycloudflare.com
 
-# Run QWallet (device/emulator)
-cd UI_App
+# Run QWallet (device/emulator, in the qchain-wallet clone)
 flutter pub get
 flutter run -d <device-id> --dart-define=API_BASE_URL=https://<your-tunnel-name>.trycloudflare.com
 ```
 
 #### 3. VS Code One-Click Launch Configuration (`launch.json`)
 
-To run and debug directly in VS Code, create or edit `.vscode/launch.json`. QWallet's `deviceId` is
+To run and debug directly in VS Code, open the folder holding both clones and create or edit `.vscode/launch.json`. QWallet's `deviceId` is
 machine-specific (run `flutter devices` and use the id it prints) since it can't target `chrome`/web:
 
 ```json
@@ -359,14 +367,14 @@ machine-specific (run `flutter devices` and use the id it prints) since it can't
   "configurations": [
     {
       "name": "QPortal (Local)",
-      "cwd": "UI_WebApp",
+      "cwd": "qchain-portal",
       "request": "launch",
       "type": "dart",
       "deviceId": "chrome"
     },
     {
       "name": "QPortal (Cloudflare)",
-      "cwd": "UI_WebApp",
+      "cwd": "qchain-portal",
       "request": "launch",
       "type": "dart",
       "deviceId": "chrome",
@@ -376,14 +384,14 @@ machine-specific (run `flutter devices` and use the id it prints) since it can't
     },
     {
       "name": "QWallet (Local)",
-      "cwd": "UI_App",
+      "cwd": "qchain-wallet",
       "request": "launch",
       "type": "dart",
       "deviceId": "<your-device-id>"
     },
     {
       "name": "QWallet (Cloudflare)",
-      "cwd": "UI_App",
+      "cwd": "qchain-wallet",
       "request": "launch",
       "type": "dart",
       "deviceId": "<your-device-id>",
@@ -397,65 +405,49 @@ machine-specific (run `flutter devices` and use the id it prints) since it can't
 
 ---
 
-### Method B: Running QPortal via Docker Web Gateway (Zero-Install)
+### Method B: The public deployment
 
-If you don't have Flutter installed locally, you can compile and serve QPortal using the `web-gateway`
-Docker container on the host/VM (QWallet isn't part of this image — see the note at the top of this
-section; run it with Flutter directly, per Method A):
-
-```bash
-cd $REPO_ROOT
-
-# 1. Build gateway container (builds QPortal in Docker)
-# For Cloudflare Tunnel, set the public URL:
-export API_BASE_URL="https://<your-tunnel-name>.trycloudflare.com/api"
-bash web-gateway/docker-build.sh
-
-# 2. Start the gateway container (binds port 8090)
-bash web-gateway/docker-run.sh
-```
-
-- **QPortal URL:** `http://localhost:8090/` (or `https://<your-tunnel>.trycloudflare.com/`)
+QPortal is no longer built into the Docker gateway. It is built and hosted by Vercel from the qchain-portal
+repository (setup in its README), and the gateway's root address redirects there. QWallet is built locally as a
+mobile app (`flutter build apk` / `flutter build ipa`).
 
 ---
 
 ## 10. Continuous Deployment (Self-Hosted Runner)
 
-Once the stack above is running, pushes to `main` can redeploy the backend and QPortal automatically.
-Two GitHub Actions workflows in `.github/workflows/` do this, run by a self-hosted runner on the VM:
+Once the stack above is running, pushes to `main` of **qchain-backend** redeploy the backend and the gateway
+automatically. Two GitHub Actions workflows in its `.github/workflows/` do this, run by a self-hosted runner on the VM:
 
-| Workflow | Triggered by changes to (except `*.md`) | Does |
+| Workflow | Triggered by changes to | Does |
 |---|---|---|
-| `deploy-backend.yml` | `offchain/**` | `go test` (builder stage) → `offchain/docker-build.sh` → `docker-run.sh` → `/health` |
-| `deploy-web-gateway.yml` | `UI_WebApp/**`, `shared/**`, `web-gateway/**`, `.dockerignore` | `web-gateway/docker-build.sh` → `docker-run.sh` → `/gw-health` + portal page |
+| `deploy-backend.yml` | Go code, `go.mod`/`go.sum`, `docker/`, `.dockerignore` | `go test` (builder stage) → `docker/docker-build.sh` → `docker/docker-run.sh` → `/health` |
+| `deploy-gateway.yml` | `gateway/` (except `*.md`) | `gateway/docker-build.sh` → `gateway/docker-run.sh` → `/gw-health` + the `/` redirect |
 
 How they behave:
 
-- **They deploy from the VM's own checkout** at `~/Desktop/QChain/QChain-PQC-blockchain`, running
+- **They deploy from the VM's own checkout** at `~/Desktop/QChain/teamqchain/qchain-backend`, running
   `git pull --ff-only` there first. They don't use a separate runner checkout, because the backend
-  needs gitignored runtime files that only exist in this one (`offchain/.env`, and
-  `crypto-material/` and `wallet/` under `qchain-network/`).
+  needs gitignored runtime files that only exist there (`.env`, and `crypto-material/` and `wallet/`
+  in the `qchain-network` clone next to it).
 - A deploy is refused if that checkout isn't on `main`, or if its tracked files were edited by hand.
 - **Rollback:** before each build, the running image is kept as `:previous`. If the new container
   fails its health check, `:previous` is restarted and the run is marked failed.
-- Chaincode, MySQL schema and QWallet aren't covered. Deploy those by hand.
-- The gateway workflow bakes in `API_BASE_URL=https://qchain.tail4fff4b.ts.net/api`. Change that line
-  if your Funnel URL differs.
+- Chaincode, the MySQL schema and QWallet aren't covered. Deploy those by hand. QPortal deploys through Vercel.
 
 **One-time runner setup** (needs admin on the GitHub repo):
 
-1. **Lock down fork PRs first.** The repo is public, and the runner can read `offchain/.env` and use
+1. **Lock down fork PRs first.** The repo is public, and the runner can read `.env` and use
    Docker. Go to *Settings → Actions → General → Approval for running fork pull request workflows
    from contributors*, choose **Require approval for all external contributors**, then **Save**.
 2. Check the runner user is in the `docker` group (`id -nG`), and note the CPU architecture
    (`uname -m`).
-3. On GitHub, go to *Settings → Actions → Runners → New self-hosted runner*, then choose **Linux**
+3. On GitHub, in the **qchain-backend** repository, go to *Settings → Actions → Runners → New self-hosted runner*, then choose **Linux**
    and the matching architecture. On the VM, run that page's **Download** commands inside
    `~/actions-runner`. Then configure the runner. The token comes from the same page; it is
    single-use and expires in an hour.
    ```bash
    cd ~/actions-runner
-   ./config.sh --url https://github.com/teamqchain/QChain-PQC-blockchain \
+   ./config.sh --url https://github.com/teamqchain/qchain-backend \
      --token <token-from-the-page> --name qchain-vm --labels qchain-vm --unattended
    ```
 4. Install the runner as a service that starts on boot:

@@ -1,0 +1,16 @@
+# OS and editors
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
+
+# Go (algo-benchmarking)
+*.test
+*.out
+coverage.out
+
+# Logs and local settings
+*.log
+.env
+.env.*
