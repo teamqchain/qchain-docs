@@ -47,6 +47,7 @@ This repository holds the project's documents:
 | `docs/senior/` | the Senior-year progress reports (Fall 2026) as Markdown |
 | `algo-benchmarking/` | the first ML-DSA benchmarks, which came before the detailed study in [qchain-kpi](https://github.com/teamqchain/qchain-kpi) |
 | `assets/` | the QChain logo and the benchmark graphs |
+| `docs/archive/` | the README of the former single `QChain-PQC-blockchain` repository (changelog and roadmap up to 9 November 2026) |
 
 ---
 
@@ -90,7 +91,8 @@ qchain-docs/
 ├── docs/
 │   ├── setup.md              # whole-system setup guide
 │   ├── junior/               # team-charter, literature-review, progress-report-1/2, final-report
-│   └── senior/               # progress-report-1, progress-report-2
+│   ├── senior/               # progress-report-1, progress-report-2
+│   └── archive/              # README of the former QChain-PQC-blockchain repository
 ├── algo-benchmarking/
 │   ├── go-bindings/          # liboqs-go benchmark (Dockerfile, main.go, tests)
 │   ├── go-native/            # pure-Go benchmark
@@ -117,6 +119,65 @@ cd qchain-docs/algo-benchmarking
 ```
 
 Then follow [algo-benchmarking/README.md](algo-benchmarking/README.md) (the liboqs-go benchmark runs in Docker).
+
+---
+
+## Recent updates
+
+- **Separate repositories (9 November 2026).** The project's single repository, `QChain-PQC-blockchain`, was split into
+  `qchain-portal`, `qchain-wallet`, `qchain-shared`, `qchain-backend`, `qchain-network` and this one, each with its
+  own history. See [Where things moved](#where-things-moved).
+- **Post-quantum Fabric MSP, live since 7 November 2026.** The network runs on ML-DSA-44: peers, orderer, admins and
+  application users, including peer and orderer TLS certificates. goleveldb replaces CouchDB, the chaincode runs as a
+  service, and the backend signs Gateway transactions with ML-DSA on Go 1.27. The end-to-end API test passes 123/123.
+- **Chain and IPFS as the source of truth.** The ledger stores a signed commitment (metadata, CID, salted field
+  hashes), never the plaintext credential, which lives only on IPFS, encrypted to the holder. Chaincode v2.0.
+- **QWallet is mobile-only**, because its post-quantum library cannot target the web.
+- **CI/CD.** Pushing to the backend's `main` auto-deploys it through a self-hosted runner, with automatic rollback.
+
+The full history up to 9 November 2026 is in [the archived README](docs/archive/QChain-PQC-blockchain-README.md#recent-updates).
+
+---
+
+## Roadmap
+
+**Phase 1: authenticity, integrity and confidentiality (complete).** ML-DSA-44 signatures over a signed commitment, a
+commitment-on-chain / data-off-chain model with the credential body encrypted end-to-end to the holder's ML-KEM-768
+key, salted per-field hashes for selective disclosure, the full issuance, presentation, verification and revocation
+lifecycle, the two apps and a publicly reachable demo.
+
+**Phase 2: post-quantum Fabric MSP (complete).** The MSP identities and the peer and orderer TLS certificates use
+ML-DSA-44, pure post-quantum and not hybrid. The only classical certificates left are the two CA servers' own TLS
+certificates (see [qchain-network](https://github.com/teamqchain/qchain-network)).
+
+**Next:** a multi-organisation network (each organisation running its own peers and keys), issuer signing on the
+university's side, and real authentication for the API.
+
+---
+
+## Where things moved
+
+The reports and the [archived README](docs/archive/QChain-PQC-blockchain-README.md) refer to paths in the former
+`QChain-PQC-blockchain` repository. Where they are now:
+
+| Former path | Now |
+|-------------|-----|
+| `UI_WebApp/` (earlier `WebApp_UI/`) | [qchain-portal](https://github.com/teamqchain/qchain-portal) |
+| `UI_App/` (earlier `App_UI/`) | [qchain-wallet](https://github.com/teamqchain/qchain-wallet) |
+| `shared/` | [qchain-shared](https://github.com/teamqchain/qchain-shared) (private) |
+| `offchain/*.go` | [qchain-backend](https://github.com/teamqchain/qchain-backend), in `api/`, `db/`, `ledger/`, `pqc/` and `config/`; `server.go` is now `main.go` |
+| `offchain/cmd/`, `offchain/Dockerfile`, `offchain/docker-*.sh` | qchain-backend: `cmd/` and `docker/` |
+| `web-gateway/` | qchain-backend: `gateway/` (API only; QPortal is hosted on Vercel) |
+| `tests/e2e_api_test.sh` | qchain-backend: `tests/` |
+| `.github/workflows/` | qchain-backend: `.github/workflows/` |
+| `qchain-network/scripts/schema.sql` | qchain-backend: `db/schema.sql` |
+| `qchain-network/scripts/setup-demo.sh`, `start-demo.sh`, `setup-ipfs-service.sh` | qchain-backend: `scripts/` |
+| `qchain-network/scripts/setup-tailscale-funnel.sh` | qchain-backend: `gateway/` |
+| the rest of `qchain-network/` | [qchain-network](https://github.com/teamqchain/qchain-network) |
+| `docs/`, `assets/`, `algo-benchmarking/` | this repository (`docs/home.html`, `docs/index.html` and `docs/assets/` are gone: the website is [teamqchain.github.io](https://github.com/teamqchain/teamqchain.github.io)) |
+| the root `README.md` | `docs/archive/QChain-PQC-blockchain-README.md` |
+
+Each repository kept the history of its files, including under their earlier names.
 
 ---
 
