@@ -316,7 +316,7 @@ The two apps have their own repositories, and both use the shared package in
   a browser at all. Run it on a device/emulator with `flutter run`, or build an install
   (`flutter build apk` / `flutter build ios`).
 
-QPortal's public deployment is on Vercel (see the qchain-portal README). For development, run the apps with Flutter:
+QPortal's public deployment is on Vercel (https://qportal.vercel.app; see the qchain-portal README). For development, run the apps with Flutter:
 
 ---
 
