@@ -7,7 +7,7 @@
 ---
 
 <p align="center">
-  <img src="assets/qchain_logo.jpeg" width="220" alt="QChain logo" />
+  <img src="/Applications/Programs for Fun/teamqchain/qchain-docs/assets/qchain_logo.jpeg" width="220" alt="QChain logo" />
 </p>
 
 <h1 align="center">QChain</h1>
