@@ -302,7 +302,7 @@ This will print an instant, free public URL in your terminal:
 +--------------------------------------------------------------------------------------------+
 ```
 
-Give `https://random-words-here.trycloudflare.com` to your frontend developer to use as the `API_BASE_URL`.
+Give `https://random-words-here.trycloudflare.com` to your frontend developer. QWallet takes it as `--dart-define=API_BASE_URL=…`; QPortal has no such option: its API address is the constant `kApiBaseUrl` in `lib/utils/webApp_config.dart`, which must be edited.
 
 ## 9. Frontend Setup
 
@@ -326,7 +326,9 @@ Ensure you have Flutter and Google Chrome installed on your machine (`flutter do
 
 #### 1. Connected to Local Backend (`http://localhost:3000`)
 
-If the backend is running locally on port 3000, simply run:
+If the backend is running locally on port 3000: QWallet uses it by default. QPortal's API address is the constant `kApiBaseUrl` in
+`lib/utils/webApp_config.dart`, which points at the public API; for a local backend, change it to `http://localhost:3000` (and don't
+commit that change). Then run:
 
 ```bash
 # Run QPortal (Issuer/Verifier/Admin Portal)
@@ -344,12 +346,12 @@ flutter run -d <device-id>
 
 #### 2. Connected to Remote Backend (via Cloudflare Tunnel URL)
 
-If connecting to a remote backend exposed by Cloudflare Tunnel, inject the URL at startup:
+If connecting to a remote backend exposed by Cloudflare Tunnel, inject the URL at startup (QWallet) or set it in `lib/utils/webApp_config.dart` (QPortal):
 
 ```bash
-# Run QPortal (in the qchain-portal clone)
+# Run QPortal (in the qchain-portal clone): first set kApiBaseUrl in lib/utils/webApp_config.dart to the tunnel URL + /api
 flutter pub get
-flutter run -d chrome --dart-define=API_BASE_URL=https://<your-tunnel-name>.trycloudflare.com
+flutter run -d chrome
 
 # Run QWallet (device/emulator, in the qchain-wallet clone)
 flutter pub get
@@ -366,21 +368,11 @@ machine-specific (run `flutter devices` and use the id it prints) since it can't
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "QPortal (Local)",
+      "name": "QPortal",
       "cwd": "qchain-portal",
       "request": "launch",
       "type": "dart",
       "deviceId": "chrome"
-    },
-    {
-      "name": "QPortal (Cloudflare)",
-      "cwd": "qchain-portal",
-      "request": "launch",
-      "type": "dart",
-      "deviceId": "chrome",
-      "toolArgs": [
-        "--dart-define=API_BASE_URL=https://<your-tunnel-name>.trycloudflare.com"
-      ]
     },
     {
       "name": "QWallet (Local)",

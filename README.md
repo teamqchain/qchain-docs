@@ -128,6 +128,8 @@ Then follow [algo-benchmarking/README.md](algo-benchmarking/README.md) (the libo
 - **Separate repositories (9 November 2026).** The project's single repository, `QChain-PQC-blockchain`, was split into
   `qchain-portal`, `qchain-wallet`, `qchain-shared`, `qchain-backend`, `qchain-network` and this one, each with its
   own history. See [Where things moved](#where-things-moved).
+- **QPortal on Vercel (10 November 2026).** The web portal is built and hosted by Vercel at https://qportal.vercel.app. The
+  old address `https://qchain.tail4fff4b.ts.net/` now serves only the API (`/api/`) and redirects every other path there.
 - **Post-quantum Fabric MSP, live since 7 November 2026.** The network runs on ML-DSA-44: peers, orderer, admins and
   application users, including peer and orderer TLS certificates. goleveldb replaces CouchDB, the chaincode runs as a
   service, and the backend signs Gateway transactions with ML-DSA on Go 1.27. The end-to-end API test passes 123/123.
