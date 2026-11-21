@@ -45,7 +45,7 @@ This repository holds the project's documents:
 |------|------------|
 | `docs/setup.md` | the whole-system setup guide: prerequisites, the Fabric network, the database, IPFS, the backend, the apps and CI/CD |
 | `docs/junior/` | the Junior-year deliverables (Spring 2026) as Markdown: team charter, literature review, progress reports 1 and 2, final report |
-| `docs/senior/` | the Senior-year progress reports (Fall 2026) as Markdown |
+| `docs/senior/` | the Senior-year progress reports and the final report (Fall 2026) as Markdown |
 | `algo-benchmarking/` | the first ML-DSA benchmarks, which came before the detailed study in [qchain-kpi](https://github.com/teamqchain/qchain-kpi) |
 | `assets/` | the QChain logo and the benchmark graphs |
 | `docs/archive/` | the README of the former single `QChain-PQC-blockchain` repository (changelog and roadmap up to 9 November 2026) |
@@ -92,7 +92,7 @@ qchain-docs/
 ├── docs/
 │   ├── setup.md              # whole-system setup guide
 │   ├── junior/               # team-charter, literature-review, progress-report-1/2, final-report
-│   ├── senior/               # progress-report-1, progress-report-2
+│   ├── senior/               # progress-report-1, progress-report-2, final-report
 │   └── archive/              # README of the former QChain-PQC-blockchain repository
 ├── algo-benchmarking/
 │   ├── go-bindings/          # liboqs-go benchmark (Dockerfile, main.go, tests)
