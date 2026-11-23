@@ -2,11 +2,12 @@
 
 **Project:** Post Quantum Cryptography in Blockchain Technology  
 **Submitted:** 23rd November 2026  
-**Team:** Team 5M's  
+**Semester:** Fall 2026/2027  
+**Team:** Team 5M's (DESC × QChain)  
 **Supervisors:** Dr. Manar Abu Talib (Head), Dr. Sohail Abbas (Co-Supervisor)  
-**Committee:** Prof. Ahmed Mohamed Khedr (Chair), Dr. Mian Ahmad Jan (Examiner), Dr. Bouziane Brik
+**Committee:** Dr. Mian Ahmad Jan (Examiner), Prof. Ahmed Mohamed Khedr (Chair), Dr. Bouziane Brik
 
-In collaboration with the Dubai Electronic Security Center (DESC).
+*A project submitted in partial fulfillment of the requirements for the degree of Bachelor of Science in Computer Science.*
 
 ---
 
@@ -21,6 +22,26 @@ In collaboration with the Dubai Electronic Security Center (DESC).
 
 ---
 
+## Acknowledgement
+
+We praise Allah for all the blessings He has bestowed upon us. We praise Him for granting us the strength, patience, and dedication to complete this work. We are grateful for every challenge that strengthened our resolve and for every success that guided us along this journey.
+
+(وَقَالُوا الْحَمْدُ لِلَّهِ الَّذِي هَدَانَا لِهَذَا وَمَا كُنَّا لِنَهْتَدِيَ لَوْلَا أَنْ هَدَانَا اللَّهُ)
+
+“And they said: Praise be to Allah for guiding us to this. We would have never been guided if Allah had not guided us.”
+
+We, the members of this project, would like to extend our heartfelt appreciation to our supervisors: Dr. Manar, our head supervisor, and Dr. Sohail, our co-supervisor, for their continuous guidance, patience, and insightful feedback throughout the development of our project, **QChain.** Their mentorship played a vital role in shaping the direction and quality of this work on **Post-Quantum Cryptography in Blockchain Technology**.
+
+We would like to express our special thanks to Prof. Qassim for his invaluable support, guidance, and contributions, which significantly enhanced the depth and strength of our project. We would also like to acknowledge Ms. Omnia for her support and assistance throughout the course of this project.
+
+We are deeply grateful to the Dubai Electronic Security Center (DESC), especially Dr. Bushra, Dr. Afra bin Fares, Hoor Arif, and Irine Corpuz, for their valuable insights, constructive feedback, and continued engagement. Their perspectives greatly contributed to refining our work and strengthening its practical relevance.
+
+We also express our sincere gratitude to our families, friends, and colleagues for their unwavering support, encouragement, and understanding throughout the development of this project. Their belief in us has been a constant source of motivation.
+
+Finally, we extend our gratitude to everyone who directly or indirectly contributed to the successful completion of **QChain**. This achievement would not have been possible without the collective encouragement, guidance, and support we received along the way.
+
+---
+
 ## Abstract
 
 The emergence of quantum computing threatens the classical cryptography that secures blockchain systems and digital credentials: RSA and elliptic-curve signatures can be forged, and encrypted data stored today can be decrypted later. This project, QChain, designs, implements and evaluates a quantum-resistant credential system on a permissioned blockchain in which every trust decision rests on NIST-standardised post-quantum cryptography.
@@ -29,9 +50,9 @@ QChain runs on Hyperledger Fabric whose own identities, including peers, orderer
 
 The system serves issuers, holders and verifiers through the QPortal web portal and the QWallet mobile wallet. It covers the complete credential lifecycle: issuance, encrypted storage, selective-disclosure presentations signed by the holder, verification, suspension, restoration and revocation. It is deployed on the university's server with continuous deployment and automatic rollback.
 
-The implementation passed all end-to-end, unit, smart-contract and tamper tests, and all 58 identity and node certificates of the network were confirmed to be ML-DSA-44. A benchmarking study of 30 algorithms on three machines found that the complete cryptographic lifecycle of a credential costs 0.69 to 1.32 ms, between 0.78 and 1.13 times its classical equivalent, while an ML-DSA-44 credential transaction is 2.8 times the size of an ECDSA one.
+The implementation passed all end-to-end, unit, smart-contract and tamper tests, and all 58 identity and node certificates of the network were confirmed to be ML-DSA-44. A benchmarking study of 30 algorithms on three machines found that the complete cryptographic lifecycle of a credential costs 0.69 to 1.32 ms, between 0.78 and 1.13 times its classical equivalent, while an ML-DSA-44 credential transaction is 2.8 times the size of an ECDSA one. A second study of the Fabric network, with up to eight organisations, found that ML-DSA-44 identities lower write throughput to 0.60–0.74 of that with ECDSA identities, while reads keep 0.81–0.86.
 
-The results show that a credential system can be post-quantum at both the credential layer and the ledger's identity layer at a modest computational cost, with storage as the main price, offering a practical path for institutions moving to post-quantum cryptography.
+The results show that a credential system can be post-quantum at both the credential layer and the ledger's identity layer at a modest computational cost, with storage and peak throughput as the main price, offering a practical path for institutions moving to post-quantum cryptography.
 
 ---
 
@@ -41,7 +62,7 @@ The results show that a credential system can be post-quantum at both the creden
 
 Digital credentials such as university degrees, transcripts and government certificates are issued, stored and verified electronically, and their trustworthiness rests on public-key cryptography. The algorithms that provide it today, RSA and elliptic-curve cryptography, can be broken by Shor's algorithm on a cryptographically relevant quantum computer (CRQC). A 2025 resource estimate shows that RSA-2048 could be factored with fewer than one million noisy qubits in under a week [1], and experts estimate a 28–49 % probability that such a machine exists within ten years [2].
 
-**QChain** is a post-quantum digital credential system for academic and government credentials in the United Arab Emirates. Issuers sign every credential with ML-DSA-44 [3]; the credential's contents are encrypted with ML-KEM-768 [4] to a key that only the holder's phone possesses and are stored on IPFS; the ledger of a permissioned Hyperledger Fabric network holds a signed commitment with salted SHA3-256 hashes of the attributes, which enables selective disclosure; and holders sign every presentation with their own ML-DSA-44 key. Every identity and node TLS certificate of the Fabric network itself is ML-DSA-44. Issuers and verifiers use the QPortal web portal and holders the QWallet mobile wallet, and a benchmarking study measured 30 algorithms and the complete credential lifecycle on three machines.
+**QChain** is a post-quantum digital credential system for academic and government credentials. Issuers sign every credential with ML-DSA-44 [3]; the credential's contents are encrypted with ML-KEM-768 [4] to a key that only the holder's phone possesses and are stored on IPFS; the ledger of a permissioned Hyperledger Fabric network holds a signed commitment with salted SHA3-256 hashes of the attributes, which enables selective disclosure; and holders sign every presentation with their own ML-DSA-44 key. Every identity and node TLS certificate of the Fabric network itself is ML-DSA-44.
 
 ### 1.2 Project Motivation
 
@@ -65,7 +86,8 @@ The aim of the project is to design, implement, deploy and evaluate a credential
 4. **No plaintext credential data on the ledger:** the ledger stores commitments, salted hashes and signatures; the ledger and IPFS are the sources of truth.
 5. **Post-quantum ledger identities:** every Fabric identity and node TLS certificate uses ML-DSA-44, without a classical fallback.
 6. **Performance evaluation:** the cost of the post-quantum primitives and of the full credential lifecycle is measured on three machines.
-7. **Deployment and automated delivery:** the system runs on the university's server, recovers after restarts and is deployed through a tested pipeline with automatic rollback.
+7. **Network performance:** the cost of ML-DSA-44 identities in the Fabric network is measured against ECDSA identities as transactions, peers and organisations grow.
+8. **Deployment and automated delivery:** the system runs on the university's server, recovers after restarts and is deployed through a tested pipeline with automatic rollback.
 
 ### 1.5 Project Scope
 
@@ -73,38 +95,48 @@ The project covers the following work:
 
 - requirements, architecture review and threat analysis; the post-quantum Hyperledger Fabric network with modified Fabric, Fabric CA and cryptographic-provider code, and the smart contract (chaincode);
 - the Go backend with 39 REST endpoints, IPFS storage and the operational database; the QPortal web portal and the QWallet mobile wallet;
-- deployment on the university's virtual machine with continuous deployment; unit, smart-contract and end-to-end testing; and a benchmarking study of 30 algorithms and the credential lifecycle on three machines.
+- deployment on the university's virtual machine with continuous deployment; unit, smart-contract and end-to-end testing; a benchmarking study of 30 algorithms and the credential lifecycle on three machines; and a performance study of the Fabric network with ML-DSA-44 against ECDSA identities.
 
 ### 1.6 Project Software and Hardware Requirements
 
+The Software and Hardware requirements are:
+
 - **Software:** Hyperledger Fabric and Fabric CA built with ML-DSA-44 support (Fabric 3.1.5 and Fabric CA 1.5.22 lines) with Go 1.27 and Docker Compose; Go and liboqs 0.16.0 for the backend; Flutter with liboqs and PointyCastle for QPortal and QWallet; IPFS (Kubo), MySQL 8, Nginx, Tailscale Funnel, GitHub Actions and Vercel.
-- **Hardware:** the university's virtual machine (2 virtual CPUs, 30 GiB of memory, 246 GB of disk) for the deployment; an Apple M1 MacBook Air and an AMD Ryzen 5 7520U laptop, which with the virtual machine are the three measurement machines; an Android or iOS phone for QWallet.
+- **Hardware:** the university's virtual machine (2 virtual CPUs, 30 GiB of memory, 246 GB of disk) for the deployment; an Apple M1 MacBook Air and an AMD Ryzen 5 7520U laptop, which with the virtual machine are the three measurement machines; a second university virtual machine (Intel Xeon Silver 4210R, 8 virtual CPUs, 26.4 GiB of memory) for the Fabric performance study; an Android or iOS phone for QWallet.
 
 ### 1.7 Project Limitations
 
+Some limitations of this project are:
+
 - All organisations of the Fabric network run on one machine, which generates their keys; a production consortium would place each organisation on its own servers.
-- The two Fabric CA servers present ECDSA P-256 TLS certificates; every other identity and TLS certificate in the network is ML-DSA-44.
+- The two Fabric CA servers present ECDSA P-256 TLS certificates.
 - ML-DSA-44 is the only signature level used at the identity layer.
 - The benchmark results describe three specific machines, one of each kind; the ledger experiments describe the network configuration that was in use while they ran (Section 9.6).
-- The deployment holds demonstration data and is reached through an open demonstration portal.
+- The Fabric performance study ran each network on one virtual machine, so its peers share the processor and see no network delay (Section 11.8).
 
 ### 1.8 Project Expected Output
 
-- a working post-quantum credential system, with the QPortal web portal and the QWallet mobile wallet, covering issuance, encryption, selective disclosure, presentation, verification, suspension, restoration and revocation;
+The Expected Outcomes of this project are:
+
+- a working post-quantum credential system, with the QPortal web portal and the QWallet mobile wallet;
 - a Hyperledger Fabric network whose identities and node TLS certificates are ML-DSA-44;
 - a benchmarking dataset and its analysis for 30 algorithms and the credential lifecycle on three machines;
-- ten public, documented source-code repositories (listed in the Appendix) and this report.
+- a performance dataset of 1,000 runs and its analysis for the Fabric network with ML-DSA-44 and ECDSA identities;
+- eleven public, documented source-code repositories (listed in the Appendix) and this report.
 
 ### 1.9 Project Schedule
 
-The project ran from 24 August to 27 November 2026 in five task groups: requirements, design review and security analysis (24 August to 10 September); the post-quantum security mechanisms (11 to 24 September); deployment hardening, testing and the first progress report (14 to 25 September); the post-quantum ledger identities and the benchmarking study (14 September to 12 November); and evaluation, reporting and demonstration (24 October to 27 November). The team met weekly with the supervisors and tracked progress in the Gantt chart shown in the Appendix (Figure 13-1).
+The project ran from 24 August to 27 November 2026 in five task groups: requirements, design review and security analysis (24 August to 10 September); the post-quantum security mechanisms (11 to 24 September); deployment hardening, testing and the first progress report (14 to 25 September); the post-quantum ledger identities and the benchmarking study (14 September to 12 November); and evaluation, reporting and demonstration (24 October to 27 November). The team tracked progress in the Gantt chart shown in the Appendix (Figure 15-1).
 
 ### 1.10 Project, Product and Schedule Risks
 
-- **Integration of ML-DSA into Fabric's identity layer.** Fabric's provider, MSP and CA had to change together; the work took longer than first planned, without moving the final deliverables.
-- **Ledger consistency under load.** A shared state database caused read conflicts in burst tests (Section 10.11); each peer now has its own goleveldb database.
-- **Measurement noise.** Disturbed measurements were detected and repeated (Section 9.5).
-- **Larger artefacts and a single host.** Credentials stay off the ledger behind signed commitments; containers restart automatically and failed deployments roll back.
+**Integration of ML-DSA into Fabric's identity layer.** Fabric's provider, MSP and CA had to change together; the work took longer than first planned, without moving the final deliverables.
+
+**Ledger consistency under load.** A shared state database caused read conflicts in burst tests (Section 10.11); each peer now has its own goleveldb database.
+
+**Measurement noise.** Disturbed measurements were detected and repeated (Section 9.5).
+
+**Larger artefacts and a single host.** Credentials stay off the ledger behind signed commitments; containers restart automatically and failed deployments roll back.
 
 ### 1.11 Success Metrics and Acceptance Criteria
 
@@ -126,6 +158,8 @@ Table 1-I lists the success metrics, how each was measured and the result achiev
 
 #### 1.11.2 Acceptance Criteria
 
+The acceptance criteria are:
+
 - all lifecycle functions work end to end on the deployed system, and all automated tests pass;
 - every credential signature, presentation signature and Fabric identity uses ML-DSA-44, credential contents use ML-KEM-768, and no attribute value is stored on the ledger;
 - the benchmark covers every planned experiment on the planned machines, and the documentation and source code are complete.
@@ -136,14 +170,16 @@ Table 1-I lists the success metrics, how each was measured and the result achiev
 
 The team consists of four members supervised by Dr. Manar Abu Talib (head supervisor) and Dr. Sohail Abbas (co-supervisor):
 
-- **Mohammed Bin Ali Maqqavi, Project Lead:** project management, security design and review, continuous deployment, benchmark design and harness;
-- **Mohammed Abdul Haris, Frontend Lead:** QWallet and QPortal, on-device keys, interface refinement, benchmark measurements;
-- **Muhammed Nihal Valiya Puthiyakath, Backend Lead:** envelope encryption, holder presentations, security testing, benchmark analysis;
+- **Mohammed Bin Ali Maqqavi, Project Lead:** project management, continuous deployment, benchmark design and harness;
+- **Mohammed Abdul Haris, Frontend Lead:** QWallet and QPortal, on-device keys, interface refinement,;
+- **Muhammed Nihal Valiya Puthiyakath, Backend Lead:** envelope encryption, holder presentations, security testing;
 - **Mohammed Hisham Obeid, Blockchain Specialist:** the post-quantum Fabric network and its ML-DSA-44 identities, ledger recovery, end-to-end tests.
 
 #### 1.12.2 Document and Version Control
 
-All code and documentation are kept in the team's GitHub organisation, in ten public repositories listed in Table 13-I. Changes reach the main branch through pull requests, the backend is tested and deployed automatically on every push, and each repository documents its own setup. Reports are written in Microsoft Word with automatic captions, cross-references and citations, and the schedule is maintained in the team's Gantt chart.
+All code and documentation are kept in the team's GitHub organisation, in eleven public repositories listed in Table 15-I. Changes reach the main branch through pull requests, the backend is tested and deployed automatically on every push, and each repository documents its own setup. Reports are written in Microsoft Word with automatic captions, cross-references and citations, and the schedule is maintained in the team's Gantt chart.
+
+---
 
 ## 2. Literature Review
 
@@ -151,17 +187,15 @@ The review examines how soon quantum computers threaten today's cryptography and
 
 ### 2.1 The Quantum Threat and Migration Timelines
 
-Figure 2-1 places the main quantum-computing milestones beside the standards and migration deadlines that followed them. Resource estimates for breaking RSA-2048 fell by more than an order of magnitude between 2019 and 2025, to fewer than one million noisy qubits running for under a week [1]; hardware crossed the error-correction threshold that fault tolerance requires, with logical error rates that fall as the code grows [9]; and vendor roadmaps target fault-tolerant machines with hundreds of logical qubits by 2029 [10]. The latest expert survey rates a cryptographically relevant quantum computer within ten years as quite possible and within fifteen years as likely [2]. For data that must stay confidential for decades, the threat is already present: ciphertext recorded today can be decrypted once such a machine exists.
+Progress in quantum computing has been followed closely by post-quantum standards and migration deadlines. Resource estimates for breaking RSA-2048 fell by more than an order of magnitude between 2019 and 2025, to fewer than one million noisy qubits running for under a week [1]; hardware crossed the error-correction threshold that fault tolerance requires, with logical error rates that fall as the code grows [9]; and vendor roadmaps target fault-tolerant machines with hundreds of logical qubits by 2029 [10]. The latest expert survey rates a cryptographically relevant quantum computer within ten years as quite possible and within fifteen years as likely [2]. For data that must stay confidential for decades, the threat is already present: ciphertext recorded today can be decrypted once such a machine exists.
 
-*Figure 2-1. Quantum capability milestones and post-quantum standards and migration deadlines, 2024–2035*
-
-In August 2024 NIST published ML-KEM (FIPS 203), ML-DSA (FIPS 204) and SLH-DSA (FIPS 205) [4, 3, 11]; FN-DSA (FIPS 206), based on Falcon, is in preparation [12], and HQC was selected as an additional key-encapsulation mechanism [13]. Migration deadlines followed quickly, as Table 2-I shows. NIST recommends crypto-agility, the ability to replace algorithms without redesigning systems, as a design principle for the transition [14], and the UAE's National Encryption Policy makes the transition binding for government entities [6].
+In August 2024 NIST published ML-KEM (FIPS 203), ML-DSA (FIPS 204) and SLH-DSA (FIPS 205) [4] [3] [11]; FN-DSA (FIPS 206), based on Falcon, is in preparation [12], and HQC was selected as an additional key-encapsulation mechanism [13]. Migration deadlines followed quickly, as Table 2-I shows. NIST recommends crypto-agility, the ability to replace algorithms without redesigning systems, as a design principle for the transition [14], and the UAE's National Encryption Policy makes the transition binding for government entities [6].
 
 **Table 2-I. POST-QUANTUM STANDARDS AND MIGRATION MANDATES**
 
 | Document | Issuer and date | Key requirement | Implication for QChain |
 | --- | --- | --- | --- |
-| FIPS 203 / 204 / 205 [4, 3, 11] | NIST, Aug 2024 | ML-KEM, ML-DSA and SLH-DSA standardised | ML-KEM-768 and ML-DSA-44 adopted |
+| FIPS 203 / 204 / 205 [4] [3] [11] | NIST, Aug 2024 | ML-KEM, ML-DSA and SLH-DSA standardised | ML-KEM-768 and ML-DSA-44 adopted |
 | NIST IR 8547 [5] | NIST, Nov 2024 | Deprecate quantum-vulnerable algorithms 2030, disallow 2035 | ECDSA identities must be replaced |
 | NCSC timeline [15] | UK NCSC, Mar 2025 | Discovery 2028, priority migration 2031, completion 2035 | Confirms the 2035 horizon |
 | EU roadmap [16] | NIS Cooperation Group, Jun 2025 | National plans 2026, high-risk systems 2030 | Credential infrastructure is high-risk |
@@ -180,7 +214,7 @@ Five families of post-quantum schemes have been studied; three of them reached s
 
 #### 2.3.1 Lattice-Based Cryptography
 
-Lattice schemes base their security on the hardness of problems such as Module Learning With Errors. ML-KEM and ML-DSA work over module lattices and offer the best overall balance of key size, signature or ciphertext size and speed, which is why they dominate the NIST selections [4, 3]. Their arithmetic is regular and maps well onto vector instructions. FN-DSA (Falcon) works over NTRU lattices and produces the smallest signatures of the family, but its signing relies on floating-point Gaussian sampling that is difficult to implement in constant time [12]. Benchmark studies rank the lattice signatures far ahead of the other families in signing speed, with ML-DSA verification among the fastest of all signature schemes [23, 24].
+Lattice schemes base their security on the hardness of problems such as Module Learning With Errors. ML-KEM and ML-DSA work over module lattices and offer the best overall balance of key size, signature or ciphertext size and speed, which is why they dominate the NIST selections [4] [3]. Their arithmetic is regular and maps well onto vector instructions. FN-DSA (Falcon) works over NTRU lattices and produces the smallest signatures of the family, but its signing relies on floating-point Gaussian sampling that is difficult to implement in constant time [12]. Benchmark studies rank the lattice signatures far ahead of the other families in signing speed, with ML-DSA verification among the fastest of all signature schemes [23] [24].
 
 #### 2.3.2 Hash-Based Cryptography
 
@@ -190,9 +224,7 @@ SLH-DSA (SPHINCS+) relies only on the security of hash functions, the most conse
 
 Code-based HQC was selected as a second key-encapsulation mechanism to provide algorithmic diversity should a weakness in lattices appear, at the cost of ciphertexts of 4.4 to 14.4 KB [13]. Multivariate schemes suffered a practical break when Rainbow was shown to be recoverable in a weekend on a laptop [25], and isogeny-based key exchange was broken in the same year; neither is suitable for a long-lived credential system.
 
-Figure 2-2 compares the three standardised signature families, and Table 2-II lists their sizes. Comparative analyses of quantum-resistant blockchains reach the same conclusion for ledger workloads, where verification is performed far more often than signing [26].
-
-*Figure 2-2. Qualitative comparison of the three NIST post-quantum signature families*
+The three standardised signature families differ most in signature size and signing speed, and Table 2-II lists their sizes. Comparative analyses of quantum-resistant blockchains reach the same conclusion for ledger workloads, where verification is performed far more often than signing [26].
 
 **Table 2-II. KEY AND SIGNATURE OR CIPHERTEXT SIZES OF STANDARDISED SCHEMES**
 
@@ -213,7 +245,7 @@ On this evidence QChain uses **ML-DSA-44** for signatures and **ML-KEM-768** for
 
 #### 2.4.1 Off-Chain Storage and Encryption
 
-Blockchain credential systems commonly place documents on the InterPlanetary File System (IPFS) and record only their content identifiers (CIDs) on the ledger. IPFS provides no confidentiality: any node that knows or discovers a CID can retrieve the content, so data must be encrypted before it is added [8], and content persists only while at least one node pins it [28]. Academic-record systems built on Fabric and IPFS store certificate files and verification data with classical cryptography and without encryption to the holder [29, 30]. The standard construction for encrypting to a recipient's public key is the KEM-DEM paradigm of Hybrid Public Key Encryption: a key-encapsulation mechanism establishes a shared secret, a key-derivation function expands it and an authenticated cipher encrypts the data [31]; hybrid KEMs such as X-Wing combine ML-KEM-768 with X25519 to hedge against a weakness in either [32]. The European Data Protection Board advises that personal data should not, as a rule, be stored on a blockchain, and discusses off-chain storage with on-chain commitments as a way to reduce it [7].
+Blockchain credential systems commonly place documents on the InterPlanetary File System (IPFS) and record only their content identifiers (CIDs) on the ledger. IPFS provides no confidentiality: any node that knows or discovers a CID can retrieve the content, so data must be encrypted before it is added [8], and content persists only while at least one node pins it [28]. Academic-record systems built on Fabric and IPFS store certificate files and verification data with classical cryptography and without encryption to the holder [29] [30]. The standard construction for encrypting to a recipient's public key is the KEM-DEM paradigm of Hybrid Public Key Encryption: a key-encapsulation mechanism establishes a shared secret, a key-derivation function expands it and an authenticated cipher encrypts the data [31]; hybrid KEMs such as X-Wing combine ML-KEM-768 with X25519 to hedge against a weakness in either [32]. The European Data Protection Board advises that personal data should not, as a rule, be stored on a blockchain, and discusses off-chain storage with on-chain commitments as a way to reduce it [7].
 
 #### 2.4.2 Verifiable Credentials and Selective Disclosure
 
@@ -229,7 +261,7 @@ At the application layer, Ouadrassi et al. signed documents with ML-DSA-65 along
 
 #### 2.6.1 Benchmarks of the Primitives
 
-Most performance studies time the primitives in isolation. Commey et al. benchmarked KEMs and signatures on a desktop, a laptop and a Raspberry Pi with liboqs 0.8.0 through Python [51]; Algar-Fernandez et al. compared five signature schemes and three KEMs on two laptops and showed that the integration route changes the measured times [52]; Lucaciu and Popescu compared C, Go and Python with a different library per language [53]; and Oleksiichuk compared the standards across Java versions and libraries [54]. Chhetri et al. measured ML-KEM and ML-DSA on an ARM Cortex-M0+ and reported coefficients of variation of 66–74 % for ML-DSA signing, caused by its rejection sampling [55]. Puch et al. compared native, container and unikernel execution and found container overhead negligible for the primitives [56]; Gillot et al. measured energy [57]; Lopez et al. evaluated KEMs on Raspberry Pi devices [58]; and post-quantum TLS has been evaluated in 5G user equipment [59, 60], for 6G networks [61] and through an evaluation framework built on OpenSSL [62]. In liboqs 0.16.0, the release used by QChain, ML-KEM and ML-DSA come from the formally verified mlkem-native and mldsa-native code [63, 64], so older measurements describe different code.
+Most performance studies time the primitives in isolation. Commey et al. benchmarked KEMs and signatures on a desktop, a laptop and a Raspberry Pi with liboqs 0.8.0 through Python [51]; Algar-Fernandez et al. compared five signature schemes and three KEMs on two laptops and showed that the integration route changes the measured times [52]; Lucaciu and Popescu compared C, Go and Python with a different library per language [53]; and Oleksiichuk compared the standards across Java versions and libraries [54]. Chhetri et al. measured ML-KEM and ML-DSA on an ARM Cortex-M0+ and reported coefficients of variation of 66–74 % for ML-DSA signing, caused by its rejection sampling [55]. Puch et al. compared native, container and unikernel execution and found container overhead negligible for the primitives [56]; Gillot et al. measured energy [57]; Lopez et al. evaluated KEMs on Raspberry Pi devices [58]; and post-quantum TLS has been evaluated in 5G user equipment [59] [60], for 6G networks [61] and through an evaluation framework built on OpenSSL [62]. In liboqs 0.16.0, the release used by QChain, ML-KEM and ML-DSA come from the formally verified mlkem-native and mldsa-native code [63] [64], so older measurements describe different code.
 
 #### 2.6.2 Blockchains, Credentials and Integration Cost
 
@@ -237,9 +269,17 @@ For blockchains, Schemitt et al. benchmarked 62 signature implementations on x64
 
 How a library is called can matter as much as the algorithm. Kotukh et al. measured a foreign-function overhead below 10 ns per call for OCaml bindings of liboqs and stated, without measuring it, that Go's boundary to C costs about 50 ns [74]. Measurement practice also varies: most studies report means or medians of 10 to 10,000 repetitions on one machine, Shaw pinned the processor and reported bootstrapped confidence intervals [75], and Frost proposed a reproducibility protocol for cross-implementation tests [76]. What a deployed application adds on top of the library, and what a complete credential lifecycle costs on several kinds of machine, had not been measured.
 
-### 2.7 Conclusion and Summary of Reviewed Literature
+### 2.7 Performance Evaluation of Hyperledger Fabric
 
-The review shows that the quantum threat falls within the validity period of today's credentials, that binding migration mandates apply in the UAE, and that the necessary primitives are standardised. It also reveals a gap. Fabric and IPFS credential systems use classical cryptography and unencrypted data; post-quantum credential work does not anchor credentials on a permissioned ledger; post-quantum Fabric designs are hybrid or lightweight and address neither confidentiality nor selective disclosure; and performance studies measure primitives rather than the lifecycle of a deployed system on several machines. No published system combines post-quantum authenticity, holder-held post-quantum confidentiality, salted selective disclosure and holder-signed presentations on a permissioned ledger whose own identities are purely post-quantum, together with a multi-machine measurement of what this costs. Table 2-III summarises the key works.
+Fabric executes, orders and validates a transaction in separate phases: endorsing peers simulate it and sign the result, the ordering service batches transactions into blocks, and every peer checks each transaction against the endorsement policy before committing it [77]. Every phase produces or checks signatures, so the identity scheme lies on the path of every transaction. BLOCKBENCH framed the evaluation of private blockchains in throughput, latency, scalability and fault tolerance [78], and later studies applied these metrics to Fabric. Thakkar et al. measured how block size, endorsement policy, channels and the state database affect throughput and latency, and identified the validation phase, with its signature checks, as a main bottleneck [79]; Kuzlu et al. measured throughput, latency and scalability under a growing load [46]; Piao et al. analysed how the endorsement policy shapes the cost of the endorsement phase [80]; and FastFabric reached 20,000 transactions per second by redesigning the peer and the orderer, which shows how far the default implementation is from its limits [81].
+
+Nasir et al. compared Fabric v0.6 and v1.0 on one server with three metrics, execution time, latency and throughput, as the number of transactions, the number of peers and the number of organisations grew, with all requests released at once [82]. Their design changes one thing between two configurations under an identical workload. The Fabric performance study of this project (Chapters 11 and 12) repeats that design, with the identity scheme as the one change.
+
+With post-quantum identities, published measurements are few and partial. PQFabric's hybrid signatures and the hybrid certificates of Abbas et al. keep ECDSA beside the post-quantum scheme, so their measurements include both [41] [42]; Ouadrassi et al. signed at the application layer and left Fabric's own identities classical [45]; Michelagnoli replaced Fabric's signature algorithms with NIST post-quantum candidates and reported the performance trade-offs [83]; and Lee implemented ML-DSA inside smart contracts, where it was not yet competitive with classical primitives [84]. How the load is generated also matters: open and closed load generators can give different pictures of the same system [85], and most blockchain benchmarks use only one of them. No study has measured a Fabric network whose certificates, endorsements and node TLS are all ML-DSA against the same network with ECDSA, or how the difference grows with transactions, peers and organisations.
+
+### 2.8 Conclusion and Summary of Reviewed Literature
+
+The review shows that the quantum threat falls within the validity period of today's credentials, that binding migration mandates apply in the UAE, and that the necessary primitives are standardised. It also reveals a gap. Fabric and IPFS credential systems use classical cryptography and unencrypted data; post-quantum credential work does not anchor credentials on a permissioned ledger; post-quantum Fabric designs are hybrid or lightweight and address neither confidentiality nor selective disclosure; performance studies measure primitives rather than the lifecycle of a deployed system on several machines; and no study has measured a Fabric network with purely post-quantum identities against the same network with classical identities as transactions, peers and organisations grow. No published system combines post-quantum authenticity, holder-held post-quantum confidentiality, salted selective disclosure and holder-signed presentations on a permissioned ledger whose own identities are purely post-quantum, together with a multi-machine measurement of what this costs. Table 2-III summarises the key works.
 
 **Table 2-III. SUMMARY OF THE KEY REVIEWED LITERATURE**
 
@@ -265,6 +305,12 @@ The review shows that the quantum threat falls within the validity period of tod
 | [56] | Benchmarking Post-Quantum Cryptography in Lightweight Virtualization Environments | 2026 | arXiv | Container overhead negligible for primitives | Embedded ARM; primitives and TLS only |
 | [70] | PQ-FundusChain | 2026 | Frontiers | ML-KEM, AES-GCM and ML-DSA with off-chain data | One application; no algorithm comparison |
 | [73] | Measuring the Impact of Post-Quantum Cryptography on Complex Applications | 2025 | IEEE | Post-quantum transition of an academic identity federation | Not credential-centric; no lifecycle |
+| [82] | Performance Analysis of Hyperledger Fabric Platforms | 2018 | Hindawi | Execution time, latency and throughput of Fabric v0.6 and v1.0 as transactions, peers and organisations grow | Classical identities; one server |
+| [79] | Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform | 2018 | IEEE | Block size, endorsement policy and validation set Fabric's throughput; signature checks limit validation | Classical identities; Fabric v1.0 |
+| [83] | Quantum-resistant Blockchain: Introduction of Post-Quantum Cryptography in Hyperledger Fabric | 2023 | Politecnico di Torino | NIST post-quantum signatures replace Fabric's classical algorithms; performance trade-offs reported | Thesis; algorithms predate FIPS 204 |
+| [84] | Towards Quantum-Safe Smart Contracts on Hyperledger Fabric | 2025 | TU Delft | ML-DSA, zero-knowledge proofs and updatable encryption run as chaincode with Fabric Private Chaincode | Post-quantum signing inside chaincode, not in Fabric's identity layer |
+
+---
 
 ## 3. System Architecture
 
@@ -469,7 +515,7 @@ The ledger and IPFS are the authoritative sources of all credential data, and th
 
 ### 3.8 Deployment Architecture
 
-Figure 3-6 shows the deployment. QPortal is a static Flutter web build served by Vercel; QWallet is installed on the holder's phone. Both call the API through a Tailscale Funnel endpoint that forwards HTTPS requests to the university's virtual machine, where an Nginx gateway serves only the API and the Go backend runs in its own container. The six Fabric containers belong to one Docker Compose project with an automatic restart policy, so the network and its ledgers come back after a restart; IPFS runs as a systemd user service and MySQL on the host. A self-hosted GitHub Actions runner deploys the backend and the gateway on every push to the main branch: it runs the unit tests in the build image first, keeps the running image as a rollback point, restarts the service and polls its health endpoint for up to 60 seconds, restoring the previous image automatically if the new one is unhealthy. The Fabric network, the chaincode and the database schema are changed only by hand. The source code of every part is listed in the Appendix (Table 13-I).
+Figure 3-6 shows the deployment. QPortal is a static Flutter web build served by Vercel; QWallet is installed on the holder's phone. Both call the API through a Tailscale Funnel endpoint that forwards HTTPS requests to the university's virtual machine, where an Nginx gateway serves only the API and the Go backend runs in its own container. The six Fabric containers belong to one Docker Compose project with an automatic restart policy, so the network and its ledgers come back after a restart; IPFS runs as a systemd user service and MySQL on the host. A self-hosted GitHub Actions runner deploys the backend and the gateway on every push to the main branch: it runs the unit tests in the build image first, keeps the running image as a rollback point, restarts the service and polls its health endpoint for up to 60 seconds, restoring the previous image automatically if the new one is unhealthy. The Fabric network, the chaincode and the database schema are changed only by hand. The source code of every part is listed in the Appendix (Table 15-I).
 
 ```text
   Browser ──loads──▶ Vercel CDN (QPortal static build)
@@ -485,6 +531,8 @@ Figure 3-6 shows the deployment. QPortal is a static Flutter web build served by
              ─▶ build, restart ─▶ /health for 60 s ─▶ healthy: done | unhealthy: roll back to previous
 ```
 **Figure 3-6.** Deployment on the university virtual machine, Vercel and the holders' phones, with the continuous-deployment pipeline
+
+---
 
 ## 4. System Analysis
 
@@ -511,6 +559,8 @@ The system serves the five actors described in Table 4-I. Issuers, verifiers and
 Figure 4-1 presents the use case diagram of the system with the relationships between the actors and their use cases.
 
 *Figure 4-1. Use case diagram of the QChain system*
+
+---
 
 ## 5. UI/UX Design
 
@@ -563,6 +613,8 @@ When scanning is not possible, the holder generates a six-digit one-time passwor
 *Figure 5-13. Manual verification by one-time password*
 
 *Figure 5-14. Verification result for a tampered credential*
+
+---
 
 ## 6. Implementation
 
@@ -635,6 +687,8 @@ The backend exposes 39 REST endpoints and a health check, grouped in Table 6-II;
 | Staff and directory | 5 | getStaff, getDirectory, inviteStaff, updateStaffRole, deleteStaff |
 | Mobile (QWallet) | 14 | checkKeys, registerHolderKeys, getEnvelope, getHolderProfile, getCredentialsByHolder, toggleFavorite, getActivity, generateOTP, generatePresentation, getCatalog, fetchDocument, getSubscriptions, approveSubscription, rejectSubscription |
 | Health | 1 | health |
+
+---
 
 ## 7. Post-Quantum Security Mechanisms
 
@@ -719,7 +773,6 @@ For every attribute the backend draws a 16-byte (128-bit) random salt and comput
 func SaltedFieldHash(salt, key, value string) string {
 	return Sha3Hex(salt + ":" + key + ":" + value)
 }
-
 
 // CommitAttributes draws a salt for every attribute and returns the salts (for
 // the holder's envelope) and the salted field hashes (for the chain).
@@ -881,6 +934,8 @@ After the mechanisms were implemented, the team reviewed them against the threat
 | 4 | A caller-supplied holder identifier could overwrite a holder record | Medium | Identifiers always generated by the server; regression tests | Fixed |
 | 5 | Envelope retrieval does not check that the caller is the holder | Low | An envelope is ciphertext that only the holder's key opens | Accepted (low risk) |
 
+---
+
 ## 8. System Testing and Validation
 
 The system is tested at four levels: unit tests of the backend and the chaincode, an end-to-end suite that exercises every API endpoint against the deployed system, a deployment gate that runs the unit tests before every backend deployment, and the validation of the post-quantum network itself. Table 8-I summarises the suites.
@@ -948,6 +1003,8 @@ The deployed network was validated directly, as Table 8-III shows. The size of a
 | Data consistency | Ledger, MySQL and IPFS compared record by record | Identical |
 | Restart | Docker restarted with the network running | All containers back with their data |
 
+---
+
 ## 9. Benchmarking Methodology and Harness
 
 The benchmarking study measures QChain's post-quantum cryptography in the way the system uses it, on three machines of different kinds. This chapter states the research questions, the algorithms, the machines, the measurement harness, the statistics and the rules that decide whether a measurement can be trusted, and the network configuration of the ledger experiments.
@@ -1010,7 +1067,42 @@ Table 9-III describes the three machines. Every measurement ran in the same Linu
 
 The harness is an independent code base that never touches the live system; Figure 9-1 shows it on the Mac, and the other two machines use launchers with the same checks. A launcher checks the machine before every run and refuses to start on battery power, with other applications open or with background load above a limit. Inside the container an orchestrator runs the measurement blocks in a seeded, shuffled order, each in a fresh process, and decides after every block whether its measurement is valid; at the end the results are copied out and their checksums verified. To measure QChain itself rather than an approximation, the harness contains verbatim copies of the backend's production functions (envelope sealing, commitment, signing, verification) and of the wallet's decryption, checked against the repository by a script.
 
-*Figure 9-1. The measurement harness, shown on the Mac*
+```text
+  MacBook Air M1 — macOS host
+  ├── Launcher (one command per run)
+  │     refuses to start on battery, with background load, open applications or automatic updates;
+  │     pauses the macOS background services, switches Wi-Fi off, keeps the Mac awake;
+  │     after the run: copies the results out, verifies checksums, runs a privacy scan
+  ├── Host monitor (every 5 s): CPU use of everything else on the Mac, thermal pressure, power source
+  └── Core-type references: performance-core and efficiency-core rates of the canary,
+        measured natively at the start of every session
+        │ Launcher: starts / resumes        │ Host monitor: samples each minute
+        ▼                                   ▼
+  Linux virtual machine (Colima: 4 vCPUs, 4 GiB)
+  └── Measurement container: one pinned CPU · 3 GB memory · no network · no CPU quota
+      ├── Orchestrator: seeded, shuffled queue of measurement blocks; quality verdict for every attempt;
+      │     repeats externally flagged blocks (at most 3 attempts); thresholds frozen by the calibration trial
+      │        ▼
+      ├── Measuring process (a fresh process per block): untimed input preparation (keys, messages);
+      │     first call · warm-up · timed samples; every output checked outside the timed region
+      │        ▼
+      └── Canary: SHA3-256 throughput at the start, every 10 min and at the end
+        │ copied out
+        ▼
+  Run folder (one per run)
+  ├── Manifest: environment, builds, thresholds, sessions and counts
+  ├── Per-block statistics: median, percentiles, spread, memory and sizes
+  ├── Quality verdicts: flags, repeats and the headline attempt of each block
+  ├── Raw samples: every timed call, compressed
+  └── Canary record and checksums: SHA-256 of every file
+
+  Cryptographic code under test (run by the measuring process)
+  ├── liboqs 0.16.0 (25 post-quantum algorithms) through the liboqs-go 0.16.0 binding
+  ├── OpenSSL 3.0 (5 classical algorithms) through cgo
+  └── QChain's production functions copied verbatim (envelope, commitment, signing, verification,
+        wallet decryption) for the integration experiments
+```
+**Figure 9-1.** The measurement harness, shown on the Mac
 
 ### 9.5 Statistics and Data Quality
 
@@ -1041,6 +1133,8 @@ The two ledger experiments, E13 and E14, measured QChain's Fabric network in the
 | State database | One CouchDB shared by both peers | One goleveldb per peer |
 | Fabric build | Hyperledger Fabric 2.5.15 | Modified Fabric, 3.1.5 line |
 | Chaincode | Synthetic payload chaincode (E14) | qchaincode 2.0 as a service |
+
+---
 
 ## 10. Benchmarking Results
 
@@ -1350,11 +1444,232 @@ Table 10-XV answers the six research questions.
 | RQ5 storage and Fabric | 22.3 KB per ML-DSA-44 credential transaction (7.9 KB with ECDSA), ten per block, about 22 GB per million credentials per peer; Fabric's latency does not depend on payload size up to 50 KB. |
 | RQ6 equivalence | Issuer-side and holder-side ML-DSA signing are equivalent in all nine tests. |
 
-## 11. Conclusion and Results
+---
+
+## 11. Fabric Performance Methodology
+
+Chapters 9 and 10 measured the post-quantum primitives and the credential lifecycle. This chapter describes a second study, at the level of the whole Fabric network: what ML-DSA-44 identities cost against ECDSA P-256 identities, and how that cost grows with transactions, peers and organisations; Chapter 12 presents its results.
+
+### 11.1 Aim and Research Questions
+
+On the same Fabric code, with identical network settings and an identical workload, the study measures what ML-DSA-44 identities cost against ECDSA P-256 identities. The identities cover the membership certificates of every node, client and administrator, the endorsement signatures, and the TLS of the orderer and the peers. The design follows Nasir et al. [82]: the same three metrics (execution time, latency and throughput) and the same three views (more transactions, more peers and more organisations). Table 11-I lists the four research questions, numbered FRQ1 to FRQ4 to keep them apart from the questions of Chapter 9.
+
+**Table 11-I. RESEARCH QUESTIONS OF THE FABRIC PERFORMANCE STUDY**
+
+| Question | What is asked | Networks that answer it |
+| --- | --- | --- |
+| FRQ1 transactions | How do execution time, latency and throughput change for both identity types as the number of transactions in a burst grows from 1 to 10,000, for writes and reads? | One organisation, one peer |
+| FRQ2 peers | How do they change as the number of peers grows from 1 to 8? | One organisation, 1 to 8 peers |
+| FRQ3 organisations | How do they change as the number of organisations, and with it the number of endorsements, grows from 1 to 8? | 1 to 8 organisations at 4 and 8 peers |
+| FRQ4 other costs | What else do ML-DSA-44 identities cost: transaction and block size, ledger growth, CPU, peak memory, network traffic, connection set-up and behaviour under a steady offered load? | Every network, with two added experiments |
+
+### 11.2 What Is Compared
+
+The comparison changes one thing: the identity type. Both arms run the same build of QChain's post-quantum Fabric code (Section 3.5), with the crypto provider set to the classical or to the post-quantum one to match the certificates. Everything else comes from QChain's architecture and is identical in both arms: the chaincode byte for byte, the endorsement policy (a majority of the organisations), one Raft orderer, the peers' configuration (one LevelDB state database per peer, a gateway concurrency limit of 500, TLS on) and one Fabric certificate authority per organisation. The study chooses its own block settings and resources, identical in both arms and listed in Table 11-III; QChain's deployed block size of 10 transactions is not used, because a larger block avoids a block-size bottleneck at saturation [79].
+
+### 11.3 Network Topologies and Workload
+
+Table 11-II lists the ten topologies. An organisation's first peer is its gateway, and the issuing organisation's gateway receives all requests, as QChain's backend does. With a majority policy, a write needs one endorsement at one organisation, two at two, three at four and five at eight; with eight peers in one organisation, a write still needs one.
+
+**Table 11-II. THE TEN NETWORK TOPOLOGIES**
+
+| Organisations × peers | Peers per organisation | Endorsements per write | Long-running containers |
+| --- | --- | --- | --- |
+| 1×1, 1×2, 1×4, 1×8 | 1, 2, 4, 8 | 1 | 4, 5, 7, 11 |
+| 2×2, 2×4, 2×8 | 1, 2, 4 | 2 | 7, 9, 13 |
+| 4×4, 4×8 | 1, 2 | 3 | 13, 17 |
+| 8×8 | 1 | 5 | 25 |
+
+Two functions of the credential chaincode are measured. A write is `issueCredential`: a credential with ten fields, a 64-character hash and a real ML-DSA-44 issuer signature and public key, identical in both arms. A read is `getCredential` of a random credential from a pool of 1,000. Each run releases a burst of 1, 10, 100, 1,000 or 10,000 requests at once, with at most 300 in flight, from a fresh client with a persistent connection to the gateway peer and a block-event stream from every peer.
+
+### 11.4 Experiments
+
+The main experiment (E1) covers two identity types, two functions, five burst sizes and ten topologies: 200 cells of five repetitions each, 1,000 runs in 20 networks. Two further experiments answer FRQ4. E2 measures connection set-up inside the two-organisation, two-peer networks: one read on a new connection (a new TLS handshake) against the same read on an open connection, 200 of each per repetition. E3 sends writes at a steady offered rate to a two-organisation, two-peer network: seven rates from 10 % to 110 % of the ECDSA write saturation (346.2 writes per second), 60 seconds each, the same rates for both arms, five repetitions, each in a fresh network of its own. E3's load is open, unlike E1's bursts, because the two kinds of load can show different behaviour [85]; at most 480 writes are in flight, and a send beyond that is counted as dropped.
+
+### 11.5 Procedure and Metrics
+
+Each network is generated and started from scratch: crypto material, channel, peers joined, certificate authorities and the issuer enrolled, chaincode deployed. An untimed set-up registers 100 holders and 1,000 credentials for the reads, and a warm-up sends 200 writes and 200 reads. The runs follow in a seeded random order, with the two arms of each run back to back. At the end, the ledger is read back and every block decoded, and the network is removed. Every transaction is stored with its timestamps, so each metric comes from the transactions themselves:
+
+- execution time: the last confirmation minus the first send; throughput: the successful transactions divided by the execution time;
+- latency: the commit on every peer minus the send, as the mean, median and 95th and 99th percentiles; and the time of each stage of a write (endorse, order, commit);
+- bytes: every transaction is split into certificates, signatures, call arguments, read-write set and framing; ledger growth per peer;
+- resources: CPU time per transaction and peak memory of every container (client, gateway peer, other peers, orderer, chaincode servers, certificate authorities) and of the whole network; the bytes the orderer sends;
+- failures, counted by cause, and the start-up time of each network.
+
+### 11.6 Test Machine
+
+The study ran on a dedicated university virtual machine, separate from QChain's live server (Table 11-III). Its processor is an Intel Xeon Silver 4210R at 2.40 GHz with 8 virtual CPUs, 26.4 GiB of memory and Ubuntu 22.04.5 LTS with Docker 29.8. The study's containers run on seven of the virtual CPUs, and every other process of the machine is confined to the eighth. On one core, ML-DSA-44 signs in 565 µs and verifies in 169 µs, against 46 µs and 97 µs for ECDSA P-256; signing is therefore about 12 times slower, verification about 1.7 times. Before the main runs, the machine was checked for a constant speed under full load, and a short trial fixed the number of transactions in flight and E3's reference rate.
+
+**Table 11-III. CONSTANTS OF THE STUDY, IDENTICAL FOR BOTH IDENTITY TYPES**
+
+| Item | Value |
+| --- | --- |
+| Fabric code | QChain's post-quantum fork of Fabric and Fabric CA, one build for both arms |
+| Identity types | ECDSA P-256 or ML-DSA-44 for every certificate, signature and node TLS connection |
+| Blocks | 100 transactions, 16 MB preferred, 99 MB absolute, 2 s batch timeout |
+| Endorsement policy | A majority of the organisations; one Raft orderer |
+| Load (E1) | Bursts of 1 to 10,000 requests, at most 300 in flight |
+| Load (E3) | 7 offered rates, 10–110 % of 346.2 writes per second, 60 s each; at most 480 in flight |
+| Containers | No memory limit and no CPU quota; seven virtual CPUs reserved for the study |
+| Repetitions | 5 per cell; median with a 95 % bootstrap interval (10,000 resamples) |
+
+### 11.7 Data Quality and Statistics
+
+A run is flagged when the machine was disturbed: other activity on the study's CPUs above 5 %, CPU steal above 2 %, the CPU isolation not in place, a system update running, swap growth above 64 MB, or a drift above 3 % in a reference task timed at the start of each network and every hour. A flagged run would be repeated up to three times; all 1,000 runs were clean on their first attempt, and no transaction failed. Each cell reports the median of its five repetitions with a 95 % bootstrap interval. Each comparison is the ratio ML-DSA-44 / ECDSA with its own bootstrap interval, and counts as a difference only when that interval excludes 1.
+
+### 11.8 Limitations
+
+- All containers share one machine: the peers compete for its CPUs and the network adds no delay, as in the reference study [82].
+- The host is shared; the reference task, the random order and the back-to-back pairs guard against its load.
+- The processor, block size, resources and load differ from QChain's deployment, so absolute numbers describe this set-up; the ratios carry over better.
+- The limit of 300 transactions in flight caps ECDSA's throughput, so the measured cost is conservative.
+- The study uses one Raft orderer, QChain's peer configuration and its Node.js chaincode, and E1 keeps connections open (E2 measures the handshake separately).
+- Read intervals are wider, so small differences in reads are read with care.
+
+---
+
+## 12. Fabric Performance Results
+
+This chapter answers FRQ1 to FRQ4 with the data of the 1,000 runs of E1 and of E2 and E3. Every value is the median of five repetitions; ECDSA P-256 is drawn in blue and ML-DSA-44 in vermilion. Section 12.7 summarises the answers.
+
+### 12.1 More Transactions (FRQ1)
+
+Figure 12-1 shows the execution time of a burst of writes on one organisation with one peer. One write and ten writes take about 2 seconds with either identity, because a block is cut only when its 2-second timer expires. From 100 writes, a block fills at once and the identity starts to matter: 100 writes take 372 ms with ECDSA and 608 ms with ML-DSA-44, and 10,000 writes take 22.5 s against 30.7 s.
+
+*Figure 12-1. Execution time of write bursts, one organisation and one peer*
+
+Reads do not wait for a block. Figure 12-2 shows that a burst of 10,000 reads takes 8.6 s with ECDSA and 10.2 s with ML-DSA-44; a single read takes 6.4 ms against 11.3 ms, because the client and the peer each sign one message, and ML-DSA-44 signing is the slower operation.
+
+*Figure 12-2. Execution time of read bursts, one organisation and one peer*
+
+Figure 12-3 shows the mean latency of a write. Up to ten writes it is about 2 s in both arms, set by the block timer. At 100 writes, ML-DSA-44 raises it from 362 ms to 596 ms; at 1,000 from 757 ms to 1.02 s; and at 10,000 from 673 ms to 922 ms, about 1.37 times.
+
+*Figure 12-3. Mean latency of writes, one organisation and one peer*
+
+Figure 12-4 shows the mean latency of a read. At 10,000 reads it is 255 ms with ECDSA and 303 ms with ML-DSA-44, a smaller step than for writes, since a read is signed once by the client and once by the peer and never reaches the orderer.
+
+*Figure 12-4. Mean latency of reads, one organisation and one peer*
+
+Figure 12-5 shows the write throughput. Up to ten writes it is the same in both arms (0.5 and 4.8 writes per second, ratio 0.99). From 100 writes, ML-DSA-44 is clearly slower: 164 against 269 writes per second at 100 (ratio 0.61), 286 against 385 at 1,000 (0.74) and 325 against 445 at 10,000 (0.73). With large bursts, ML-DSA-44 identities therefore cost about a quarter of the write throughput.
+
+*Figure 12-5. Write throughput, one organisation and one peer*
+
+Figure 12-6 shows the read throughput. At 10 and 100 reads there is no difference (ratios 1.04 and 1.01, intervals including 1); at 1,000 and 10,000 reads, ML-DSA-44 delivers 879 and 982 reads per second against 1,081 and 1,168, ratios 0.81 and 0.84. A single read is the exception: 88.5 against 157 reads per second (0.57), since one read is one signature on each side and nothing else.
+
+*Figure 12-6. Read throughput, one organisation and one peer*
+
+### 12.2 More Peers (FRQ2)
+
+Figure 12-7 shows the write throughput of 10,000 writes as one organisation grows from one to eight peers. Both arms slow down, because every peer validates every block and all peers share the machine: ECDSA falls from 445 to 239 writes per second and ML-DSA-44 from 325 to 171. The ratio, however, stays at 0.72–0.73 for every peer count.
+
+*Figure 12-7. Write throughput of 10,000 writes against the number of peers, one organisation*
+
+Figure 12-8 shows the reads. They are served by the gateway peer alone, so adding peers changes nothing: about 1,130–1,170 reads per second with ECDSA and 950–980 with ML-DSA-44, ratios 0.83–0.86.
+
+*Figure 12-8. Read throughput of 10,000 reads against the number of peers, one organisation*
+
+Figure 12-9 shows the mean write latency, which grows with the peers in both arms: from 673 ms to 1.25 s with ECDSA and from 922 ms to 1.75 s with ML-DSA-44, about 1.4 times at every peer count.
+
+*Figure 12-9. Mean latency of 10,000 writes against the number of peers, one organisation*
+
+Figure 12-10 brings all write cells of one organisation together as throughput ratios. Bursts of one and ten writes show no cost (0.98–0.99); from 100 writes the ratio lies between 0.61 and 0.75 and does not fall as peers are added. Figure 12-11 shows the same view for reads, with ratios mostly between 0.75 and 0.90 and wider intervals.
+
+*Figure 12-10. ML-DSA-44 / ECDSA write throughput over peers and burst size, one organisation*
+
+*Figure 12-11. ML-DSA-44 / ECDSA read throughput over peers and burst size, one organisation*
+
+More peers therefore cost both arms the same share: the ML-DSA-44 overhead stays at about 27 % of the write throughput as the peers grow from one to eight.
+
+### 12.3 More Organisations (FRQ3)
+
+Figure 12-12 shows the write throughput of 10,000 writes with eight peers as the organisations grow from one to eight, and with them the endorsements per write from one to five. Here the cost grows: ECDSA falls from 239 to 76.5 writes per second and ML-DSA-44 from 171 to 45.8, so the ratio drops from 0.72 to 0.66, 0.63 and 0.60.
+
+*Figure 12-12. Write throughput of 10,000 writes against the number of organisations, 8 peers*
+
+Figure 12-13 shows that reads are unaffected by the organisations, as they are by the peers: 1,134–1,164 reads per second with ECDSA and 942–971 with ML-DSA-44, ratios 0.83–0.86.
+
+*Figure 12-13. Read throughput of 10,000 reads against the number of organisations, 8 peers*
+
+Figure 12-14 shows the mean write latency. With one organisation it is 1.25 s against 1.75 s; with eight organisations it is 3.94 s against 6.56 s, 1.67 times.
+
+*Figure 12-14. Mean latency of 10,000 writes against the number of organisations, 8 peers*
+
+Figure 12-15 shows what this means for a full burst: with eight organisations, 10,000 writes take 131 s with ECDSA and 218 s with ML-DSA-44.
+
+*Figure 12-15. Execution time of 10,000 writes against the number of organisations, 8 peers*
+
+Figure 12-16 shows the write ratios over organisations and peers. Each row of the heatmap holds the number of organisations constant, and its ratio barely moves with the peers; each step up in organisations lowers it, from 0.72–0.73 with one organisation to 0.60 with eight. The number of endorsements, not the number of peers, drives the cost.
+
+*Figure 12-16. ML-DSA-44 / ECDSA write throughput over organisations and peers, 10,000 writes*
+
+Figure 12-17 shows that reads keep ratios of 0.83–0.86 in every topology.
+
+*Figure 12-17. ML-DSA-44 / ECDSA read throughput over organisations and peers, 10,000 reads*
+
+### 12.4 Other Costs (FRQ4)
+
+Figure 12-18 splits one credential write into its parts. With one endorsement it is 20.6 KB with ECDSA and 39.9 KB with ML-DSA-44, 1.94 times. About 18 KB is the same in both: the call arguments and the read-write set. The difference is in the certificates (811 against 5,681 bytes each) and the signatures (70 against 2,420 bytes). Each further endorsement adds a certificate and a signature, about 0.9 KB with ECDSA and 8.1 KB with ML-DSA-44, so a write with five endorsements is 24.1 KB against 72.3 KB, 3.00 times.
+
+*Figure 12-18. Bytes of one credential write by part, against the number of endorsements*
+
+Figure 12-19 turns these sizes into ledger growth. Per million writes, each peer stores 29.7–33.3 GB with ECDSA and 49.1–81.6 GB with ML-DSA-44, the upper end with eight organisations.
+
+*Figure 12-19. Ledger growth per peer per million writes, by topology*
+
+Figure 12-20 shows the CPU time per write across all containers, with eight peers. ML-DSA-44 costs 1.50 to 1.66 times as much: 36.7 against 24.5 ms with one organisation and 148.5 against 89.6 ms with eight. Most of it is spent by the peers that are not the gateway, which validate every signature of every block.
+
+*Figure 12-20. CPU time per credential write by component, 8 peers, 10,000 writes*
+
+Figure 12-21 shows the peak memory of the whole network during 10,000 writes with eight peers: 3.2–3.8 GB with ECDSA and 3.8–4.9 GB with ML-DSA-44. Figure 12-22 shows that the gateway peer, which holds the endorsements of the writes in flight, accounts for much of the difference: 391–445 MB against 611–699 MB.
+
+*Figure 12-21. Peak memory of the whole network against the number of organisations, 8 peers*
+
+*Figure 12-22. Peak memory of the gateway peer against the number of organisations, 8 peers*
+
+Figure 12-23 shows the bytes the orderer sends per write. Every peer pulls every block, so the traffic grows with the peers: from 20.8 to 165.6 KB with ECDSA and from 40.3 to 321.5 KB with ML-DSA-44, 1.94 times at every peer count.
+
+*Figure 12-23. Bytes sent by the orderer per write against the number of peers, one organisation*
+
+Figure 12-24 splits a write into its stages for bursts of 1,000. With one organisation and one peer, endorsement takes 217 against 263 ms, ordering 18 against 38 ms and commit 461 against 625 ms. With eight organisations, the commit stage dominates and nearly doubles, 2,142 against 4,187 ms, because every peer checks five ML-DSA-44 endorsements per transaction.
+
+*Figure 12-24. Median time of each stage of a write, 1,000 writes*
+
+Figure 12-25 shows the cost of a TLS handshake. A read on an open connection takes 2.4 ms with ECDSA and 3.7 ms with ML-DSA-44; on a new connection, which adds the handshake, 4.7 ms against 6.6 ms. The handshake itself costs about 2.3 ms with ECDSA and 2.9 ms with ML-DSA-44, so the identity type adds about 0.6 ms to each new connection, which matters only when connections are not reused.
+
+*Figure 12-25. Median time of one read on an open and on a new connection (E2)*
+
+### 12.5 Behaviour under Offered Load (E3)
+
+Figure 12-26 shows the median latency of writes against a steady offered load on two organisations with two peers. Up to 173 writes per second, both arms keep up, and ML-DSA-44 adds 70 to 180 ms. ECDSA keeps up to 346 writes per second (333 achieved at a median of 625 ms) and saturates only at 381 offered (347 achieved, 1,195 sends dropped). ML-DSA-44 saturates between 173 and 260: at 260 offered it achieves 229 with a median of 1.76 s and drops 1,248 sends, and its throughput tops out at 242 writes per second. Under a steady load, the ML-DSA-44 network therefore saturates at about 70 % of the ECDSA network's rate.
+
+*Figure 12-26. Median write latency against offered load, 2 organisations and 2 peers (E3)*
+
+### 12.6 What the Results Mean for QChain
+
+QChain's live network has two organisations with one peer each. In that topology, ML-DSA-44 identities cost 31 % of the write throughput for large bursts (ratio 0.69), 15 % of the read throughput (0.85) and 1.87 times the ledger growth. At QChain's actual load, credentials issued one at a time or in small batches, the block timer dominates and the cost is not visible: a burst of up to ten writes takes the same time with either identity. The price of a purely post-quantum identity layer is therefore paid mainly in bytes, CPU and peak capacity, and grows with the number of organisations that must endorse each credential. Network start-up took 20–76 s with ECDSA and 22–64 s with ML-DSA-44, with no consistent difference.
+
+### 12.7 Answers to the Research Questions
+
+Table 12-I answers the four research questions.
+
+**Table 12-I. ANSWERS TO THE RESEARCH QUESTIONS OF THE FABRIC PERFORMANCE STUDY**
+
+| Question | Answer |
+| --- | --- |
+| FRQ1 transactions | Up to ten transactions, no difference: the 2 s block timer sets the time. From 100, write throughput falls to 0.61–0.74 of ECDSA's and latency rises 1.3–1.7 times; reads cost less (0.81–0.84 at 1,000 and 10,000), except a single read (0.57). |
+| FRQ2 peers | More peers slow both arms alike; the write ratio stays at 0.72–0.73 from one to eight peers, and reads do not depend on the peers (0.83–0.86). |
+| FRQ3 organisations | The cost grows with the endorsements: the write ratio falls from 0.72 to 0.60 as the organisations grow from one to eight (one to five endorsements), and write latency reaches 1.67 times; reads stay at 0.83–0.86. |
+| FRQ4 other costs | A write is 1.94–3.00 times larger, and the ledger grows 49–82 GB per million writes per peer against 30–33 GB; CPU per write is 1.50–1.66 times, peak memory up to 1.3 times for the network and 1.6 times for the gateway peer, orderer traffic 1.94 times; a TLS handshake adds about 0.6 ms; under a steady load the network saturates at about 70 % of ECDSA's rate. |
+
+---
+
+## 13. Conclusion and Results
 
 QChain shows that a digital credential system can be post-quantum at both of its layers. At the credential layer, issuers sign canonical commitments with ML-DSA-44, credential contents are encrypted with ML-KEM-768 to keys that never leave the holder's phone, salted SHA3-256 field hashes allow holders to disclose only chosen attributes, and every presentation carries the holder's own ML-DSA-44 signature. At the ledger layer, the team built a Hyperledger Fabric network in which every identity, endorsement, block and node TLS certificate uses ML-DSA-44, by modifying Fabric, Fabric CA and Fabric's cryptographic library, and deployed it with the backend on the university's server and QPortal on Vercel.
 
 The system passed all 123 end-to-end assertions, every unit and smart-contract test and every tamper test, and all 58 identity and node certificates of the network were confirmed to be ML-DSA-44. The benchmarking study of 30 algorithms on three machines showed that QChain's complete cryptographic lifecycle costs 0.69 to 1.32 ms per credential, between 0.78 and 1.13 times its classical equivalent, that hardware and vector instructions matter more than the algorithm choice within the lattice family, and that storage is the real price: an ML-DSA-44 credential transaction is 2.8 times the size of an ECDSA one, while Fabric's own latency is two to three orders of magnitude above the cost of the cryptography.
+
+The Fabric performance study compared the same network code with ECDSA and with ML-DSA-44 identities in 1,000 runs on up to eight organisations and eight peers. Up to ten transactions, the block timer hides any difference. For larger bursts, ML-DSA-44 identities lower write throughput to 0.61–0.74 of the ECDSA value with one organisation and to 0.60 with eight, because each endorsement adds a larger certificate and signature to every transaction, while reads keep 0.81–0.86. A write becomes 1.9 to 3.0 times larger, its CPU time 1.5 to 1.7 times, and under a steady load the network saturates at about 70 % of the ECDSA rate. At QChain's issuance rate the difference is not visible to users; it is paid in storage and peak capacity.
 
 The project contributes:
 
@@ -1362,105 +1677,117 @@ The project contributes:
 - holder-held post-quantum confidentiality, so that neither the issuer nor any ledger peer can read a credential after issuance;
 - quantum-safe selective disclosure without zero-knowledge machinery, and post-quantum holder binding of every presentation;
 - no plaintext credential data on the ledger;
-- a purely post-quantum Fabric identity layer, without a classical fallback, unlike hybrid designs [41, 42];
-- a multi-machine measurement of the post-quantum credential lifecycle through the code of a deployed system.
+- a purely post-quantum Fabric identity layer, without a classical fallback, unlike hybrid designs [41] [42];
+- a multi-machine measurement of the post-quantum credential lifecycle through the code of a deployed system;
+- a network-level measurement of what purely post-quantum identities cost Hyperledger Fabric as transactions, peers and organisations grow.
 
 Together these results give UAE institutions a working, measured path to post-quantum credentials that meets the national migration requirements.
 
-## 12. References
+---
 
-1. C. Gidney, "How to factor 2048 bit RSA integers with less than a million noisy qubits," arXiv preprint arXiv:2505.15917, 2025. [Online]. Available: https://arxiv.org/abs/2505.15917.
-2. M. Mosca and M. Piani, "Quantum Threat Timeline Report 2025," Global Risk Institute, Toronto, 2026. [Online]. Available: https://globalriskinstitute.org/publication/quantum-threat-timeline-report-2025b/.
-3. National Institute of Standards and Technology, "Module-Lattice-Based Digital Signature Standard (FIPS 204)," U.S. Department of Commerce, Gaithersburg, MD, 2024. [Online]. Available: https://doi.org/10.6028/NIST.FIPS.204.
-4. National Institute of Standards and Technology, "Module-Lattice-Based Key-Encapsulation Mechanism Standard (FIPS 203)," U.S. Department of Commerce, Gaithersburg, MD, 2024. [Online]. Available: https://doi.org/10.6028/NIST.FIPS.203.
-5. National Institute of Standards and Technology, "Transition to Post-Quantum Cryptography Standards (NIST IR 8547, Initial Public Draft)," NIST, Gaithersburg, MD, 2024. [Online]. Available: https://doi.org/10.6028/NIST.IR.8547.ipd.
-6. Aletihad News Center, "UAE approves National Encryption Policy, issues executive regulation," Aletihad, 27 November 2025. [Online]. Available: https://en.aletihad.ae/news/uae/4625341/uae-approves-national-encryption-policy--issues-executive-re. [Accessed 26 September 2026].
-7. European Data Protection Board, "Guidelines 02/2025 on processing of personal data through blockchain technologies, Version 2.0," EDPB, Brussels, 2026. [Online]. Available: https://www.edpb.europa.eu/system/files/2026-07/edpb_guidelines_202502_blockchain_v2_en.pdf.
-8. IPFS Documentation, "Privacy and encryption," IPFS Docs, 2025. [Online]. Available: https://docs.ipfs.tech/concepts/privacy-and-encryption/. [Accessed 26 September 2026].
-9. Google Quantum AI and Collaborators, "Quantum error correction below the surface code threshold," Nature, vol. 638, no. 8052, pp. 920-926, 2025. [Online]. Available: https://doi.org/10.1038/s41586-024-08449-y.
-10. IBM Quantum, "IBM lays out clear path to fault-tolerant quantum computing," IBM Quantum Computing Blog, 10 June 2025. [Online]. Available: https://www.ibm.com/quantum/blog/large-scale-ftqc. [Accessed 26 September 2026].
-11. National Institute of Standards and Technology, "Stateless Hash-Based Digital Signature Standard (FIPS 205)," U.S. Department of Commerce, Gaithersburg, MD, 2024. [Online]. Available: https://doi.org/10.6028/NIST.FIPS.205.
-12. R. Perlner, "FIPS 206 Status Update: FN-DSA (Falcon)," NIST Computer Security Resource Center, 2025. [Online]. Available: https://csrc.nist.gov/csrc/media/presentations/2025/fips-206-fn-dsa-(falcon)/images-media/fips_206-perlner_2.1.pdf. [Accessed 26 September 2026].
-13. National Institute of Standards and Technology, "Status Report on the Fourth Round of the NIST Post-Quantum Cryptography Standardization Process (NIST IR 8545)," NIST, Gaithersburg, MD, 2025. [Online]. Available: https://doi.org/10.6028/NIST.IR.8545.
-14. National Institute of Standards and Technology, "Considerations for Achieving Cryptographic Agility: Strategies and Practices (NIST CSWP 39)," NIST, Gaithersburg, MD, 2025. [Online]. Available: https://doi.org/10.6028/NIST.CSWP.39.
-15. National Cyber Security Centre, "Timelines for migration to post-quantum cryptography," NCSC Guidance, 20 March 2025. [Online]. Available: https://www.ncsc.gov.uk/guidance/pqc-migration-timelines. [Accessed 26 September 2026].
-16. NIS Cooperation Group, "A Coordinated Implementation Roadmap for the Transition to Post-Quantum Cryptography," European Commission, Shaping Europe's Digital Future, 23 June 2025. [Online]. Available: https://digital-strategy.ec.europa.eu/en/library/coordinated-implementation-roadmap-transition-post-quantum-cryptography. [Accessed 26 September 2026].
-17. Advanced Technology Research Council, "UAE Cyber Security Council partners with ATRC to advance national post-quantum security transition," ATRC News, 11 May 2026. [Online]. Available: https://www.atrc.gov.ae/news/uae-cyber-security-council-partners-atrc-advance-national-post-quantum-security-transition. [Accessed 26 September 2026].
-18. T. Mallick, M. Zeldin, M. Cenk and C. Nita-Rotaru, "Quantum Disruption: An SOK of How Post-Quantum Attackers Reshape Blockchain Security and Performance," arXiv preprint arXiv:2512.13333, 2025. [Online]. Available: https://arxiv.org/abs/2512.13333.
-19. J. Gomes, S. Khan and D. Svetinovic, "Fortifying the Blockchain: A Systematic Review and Classification of Post-Quantum Consensus Solutions for Enhanced Security and Resilience," IEEE Access, vol. 11, pp. 74088-74100, 2023. [Online]. Available: https://doi.org/10.1109/ACCESS.2023.3296559.
-20. Y. Wang and E. S. Ismail, "A Review on the Advances, Applications, and Future Prospects of Post-Quantum Cryptography in Blockchain and IoT," IEEE Access, vol. 13, pp. 112962-112977, 2025. [Online]. Available: https://doi.org/10.1109/ACCESS.2025.3584473.
-21. S. Al-Janabi, "Post-Quantum Blockchain: Challenges and Opportunities," arXiv preprint arXiv:2508.17071, 2025. [Online]. Available: https://arxiv.org/abs/2508.17071.
-22. R. Campbell, "Hybrid Post-Quantum Signatures for Bitcoin and Ethereum: A Protocol-Level Integration Strategy," The Journal of The British Blockchain Association, vol. 9, no. 1, pp. 1-13, 2026. [Online]. Available: https://doi.org/10.31585/jbba-9-1-(2)2026.
-23. M. Vidaković and K. Miličević, "Performance and Applicability of Post-Quantum Digital Signature Algorithms in Resource-Constrained Environments," Algorithms, vol. 16, no. 11, p. 518, 2023. [Online]. Available: https://doi.org/10.3390/a16110518.
-24. E. D. Demir, B. Bilgin and M. C. Onbasli, "Performance Analysis and Industry Deployment of Post-Quantum Cryptography Algorithms," arXiv preprint arXiv:2503.12952, 2025. [Online]. Available: https://arxiv.org/abs/2503.12952.
-25. W. Beullens, "Breaking Rainbow Takes a Weekend on a Laptop," in Advances in Cryptology - CRYPTO 2022, Lecture Notes in Computer Science, vol. 13508, Cham, 2022. [Online]. Available: https://doi.org/10.1007/978-3-031-15979-4_16.
-26. P. Thanalakshmi, A. Rishikhesh, J. M. Marceline, G. P. Joshi and W. Cho, "A Quantum-Resistant Blockchain System: A Comparative Analysis," Mathematics, vol. 11, no. 18, p. 3947, 2023. [Online]. Available: https://doi.org/10.3390/math11183947.
-27. The Linux Foundation, "Announcing the Post-Quantum Cryptography Alliance (PQCA)," Linux Foundation Press Release, 6 February 2024. [Online]. Available: https://www.linuxfoundation.org/press/announcing-the-post-quantum-cryptography-alliance-pqca. [Accessed 26 September 2026].
-28. IPFS Documentation, "Persistence, permanence, and pinning," IPFS Docs, 2025. [Online]. Available: https://docs.ipfs.tech/concepts/persistence/. [Accessed 26 September 2026].
-29. S. Khaleelullah, S. T. Vangapalli, M. Gaddam, V. S. Hanumakonda and U. K. G. Gangapuram, "Verification of Academic Records Using Hyperledger Fabric and IPFS," in 2023 3rd International Conference on Pervasive Computing and Social Networking (ICPCSN), Salem, India, 2023. [Online]. Available: https://doi.org/10.1109/ICPCSN58827.2023.00040.
-30. R. A. Jaafar and S. N. Alsaad, "Enhancing Educational Certificate Verification With Blockchain and IPFS: A Decentralized Approach Using Hyperledger Fabric," TEM Journal, vol. 12, no. 4, pp. 2385-2395, 2023. [Online]. Available: https://doi.org/10.18421/TEM124-51.
-31. R. Barnes, K. Bhargavan, B. Lipp and C. A. Wood, "Hybrid Public Key Encryption (RFC 9180)," Internet Research Task Force (IRTF), 2022. [Online]. Available: https://doi.org/10.17487/RFC9180.
-32. M. Barbosa, D. Connolly, J. D. Duarte, A. Kaiser, P. Schwabe, K. Varner and B. Westerbaan, "X-Wing: The Hybrid KEM You've Been Looking For," IACR Communications in Cryptology, vol. 1, no. 1, 2024. [Online]. Available: https://doi.org/10.62056/a3qj89n4e.
-33. World Wide Web Consortium, "Verifiable Credentials Data Model v2.0," W3C Recommendation, 15 May 2025. [Online]. Available: https://www.w3.org/TR/vc-data-model-2.0/. [Accessed 26 September 2026].
-34. D. Fett, K. Yasuda and B. Campbell, "Selective Disclosure for JSON Web Tokens (RFC 9901)," Internet Engineering Task Force (IETF), 2025. [Online]. Available: https://www.rfc-editor.org/rfc/rfc9901.
-35. International Organization for Standardization, "ISO/IEC 18013-5:2021 Personal identification - ISO-compliant driving licence - Part 5: Mobile driving licence (mDL) application," ISO/IEC, Geneva, 2021. [Online]. Available: https://www.iso.org/standard/69084.html.
-36. T. Wood, K. Thomas, M. Dean, S. Kannan and R. Learney, "Towards Post-Quantum Verifiable Credentials," in Proceedings of the 19th International Conference on Availability, Reliability and Security (ARES 2024), Vienna, 2024. [Online]. Available: https://doi.org/10.1145/3664476.3669932.
-37. J. Bootle, V. Lyubashevsky, N. K. Nguyen and A. Sorniotti, "A Framework for Practical Anonymous Credentials from Lattices," in Advances in Cryptology - CRYPTO 2023, Lecture Notes in Computer Science, Cham, 2023. [Online]. Available: https://doi.org/10.1007/978-3-031-38545-2_13.
-38. D. Margaria, A. Pino, A. Vesco, G. D’Alconzo, A. J. Di Scala, E. Guglielmino and C. Sanna, "Implementation of a Post-Quantum Anonymous Verifiable Credential Framework," in 2025 IEEE Symposium on Computers and Communications (ISCC), 2025. [Online]. Available: https://doi.org/10.1109/iscc65549.2025.11325782.
-39. A. Pino, D. Margaria and A. Vesco, "On PQ/T Hybrid Verifiable Credentials and Presentations to Build Trust in IoT Systems," in 2024 9th International Conference on Smart and Sustainable Technologies (SpliTech), 2024. [Online]. Available: https://doi.org/10.23919/splitech61897.2024.10612295.
-40. A. Solavagione and A. Vesco, "Transition of Self-Sovereign Identity to Post-Quantum Cryptography," in 2025 International Conference on Quantum Communications, Networking, and Computing (QCNC), 2025. [Online]. Available: https://doi.org/10.1109/qcnc64685.2025.00035.
-41. A. Holcomb, G. Pereira, B. Das and M. Mosca, "PQFabric: A Permissioned Blockchain Secure from Both Classical and Quantum Attacks," in 2021 IEEE International Conference on Blockchain and Cryptocurrency (ICBC), Sydney, Australia, 2021. [Online]. Available: https://doi.org/10.1109/ICBC51069.2021.9461070.
-42. S. Abbas, A. Sultana and G. Kaddoum, "Quantum-Safe Blockchain in Hyperledger Fabric," IEEE Networking Letters, vol. 7, no. 1, pp. 61-65, 2025. [Online]. Available: https://doi.org/10.1109/lnet.2024.3522966.
-43. V. K. Kasula, S. B. Rakki and R. Banoth, "Enhancing Hyperledger Fabric Security with Lightweight Post-Quantum Cryptography and National Cryptographic Algorithms," in 2025 37th Conference of Open Innovations Association (FRUCT), Narvik, Norway, 2025. [Online]. Available: https://doi.org/10.23919/FRUCT65909.2025.11008110.
-44. S. Grebnev, Y. Melnichuk, I. Poltavskaya, O. Turchenko, A. Kurochkin and A. Polubelov, "Analysis and challenges of implementing post-quantum cryptographic algorithms in Ethereum and Hyperledger Fabric networks," Journal of Computer Virology and Hacking Techniques, vol. 22, no. 1, p. 3, 2025. [Online]. Available: https://doi.org/10.1007/s11416-025-00585-x.
-45. N. L. Ouadrassi, M. Said Boukhryss, A. Azmani and K. J. Hassani, "Toward Quantum-Safe Permissioned Blockchains: Evaluating Hybrid ML-DSA-65/ECDSA Signatures on Hyperledger Fabric," IEEE Access, vol. 14, pp. 146672-146703, 2026. [Online]. Available: https://doi.org/10.1109/access.2026.3735938.
-46. M. Kuzlu, M. Pipattanasomporn, L. Gurses and S. Rahman, "Performance Analysis of a Hyperledger Fabric Blockchain Framework: Throughput, Latency and Scalability," in 2019 IEEE International Conference on Blockchain (Blockchain), 2019. [Online]. Available: https://doi.org/10.1109/blockchain.2019.00003.
-47. T. Zhukabayeva, A. u. Rehman, N. Tariq and E. Benkhelifa, "Hyperledger Fabric Based Post Quantum Cryptography Healthcare Application Using Discrete Event Simulation," IEEE Access, 2024. [Online]. Available: https://doi.org/10.1109/access.2024.3513153.
-48. Hyperledger Foundation, "What's new in Hyperledger Fabric v3.0," Hyperledger Fabric Documentation, 2024. [Online]. Available: https://hyperledger-fabric.readthedocs.io/en/release-3.0/whatsnew.html. [Accessed 26 September 2026].
-49. J. Massimo, P. Kampanakis, S. Turner and B. Westerbaan, "Internet X.509 Public Key Infrastructure - Algorithm Identifiers for the Module-Lattice-Based Digital Signature Algorithm (ML-DSA) (RFC 9881)," Internet Engineering Task Force (IETF), 2025. [Online]. Available: https://www.rfc-editor.org/rfc/rfc9881.
-50. The Go Authors, "Go 1.27 Release Notes," The Go Programming Language, August 2026. [Online]. Available: https://go.dev/doc/go1.27. [Accessed 26 September 2026].
-51. D. Commey, B. Appiah, G. S. Klogo, W. Bagyl-Bac, J. D. Gadze, Y. Alsenani and G. V. Crosby, "Performance Analysis and Deployment Considerations of Post-Quantum Cryptography for Consumer Electronics," arXiv preprint arXiv:2505.02239, 2025. [Online]. Available: https://arxiv.org/abs/2505.02239.
-52. J. Algar-Fernandez, A. Villacís-Vanegas, Y. Amaro-Aular and M. Cano, "Benchmarking Post-Quantum Signatures and KEMs on General-Purpose CPUs Using a TCP Client–Server Testbed," Computers, vol. 15, no. 2, p. 116, 2026. [Online]. Available: https://doi.org/10.3390/computers15020116.
-53. D. Lucaciu and D. E. Popescu, "Cross-Platform Performance and Security Evaluation of Post-Quantum Cryptographic Algorithms on Resource-Constrained Devices," Applied Sciences, vol. 16, no. 12, p. 5781, 2026. [Online]. Available: https://doi.org/10.3390/app16125781.
-54. Y. Oleksiichuk, "Empirical Performance Evaluation of NIST Post-Quantum Cryptographic Algorithms ML-KEM, ML-DSA, and SLH-DSA across JDK Versions," Cybersecurity: Education, Science, Technique, vol. 1, no. 33, p. 165, 2026. [Online]. Available: https://doi.org/10.28925/2663-4023.2026.33.1210.
-55. R. Chhetri, S. Dhakal and A. Gautam, "Benchmarking NIST-Standardised ML-KEM and ML-DSA on ARM Cortex-M0+: Latency, Rejection-Sampling Variance, and Memory on the RP2040," arXiv preprint arXiv:2603.19340, 2026. [Online]. Available: https://arxiv.org/abs/2603.19340.
-56. N. Puch, C. H. Ta and M. Beckel, "Benchmarking Post-Quantum Cryptography in Lightweight Virtualization Environments on Embedded Hardware," arXiv preprint arXiv:2609.23902, 2026. [Online]. Available: https://arxiv.org/abs/2609.23902.
-57. O. Gillot, W. J. Buchanan and M. G. Tehrani, "Energy Consumption of Post-Quantum Cryptography on Constrained and General-Purpose Architectures," Cryptography, vol. 10, no. 4, p. 55, 2026. [Online]. Available: https://doi.org/10.3390/cryptography10040055.
-58. J. Lopez, V. Cadena and M. S. Rahman, "Evaluating Post-Quantum Cryptographic Algorithms on Resource-Constrained Devices," arXiv preprint arXiv:2507.08312, 2025. [Online]. Available: https://arxiv.org/abs/2507.08312.
-59. S. Hoque, A. Aydeger, E. Zeydan and M. Liyanage, "Analysis of Post-Quantum Cryptography in User Equipment in 5G and Beyond," arXiv preprint arXiv:2507.17074, 2025. [Online]. Available: https://arxiv.org/abs/2507.17074.
-60. S. Hoque and A. Aydeger, "Energy-Aware System-Level Evaluation of Post-Quantum TLS on Embedded User Equipment over a Disaggregated 5G Network," arXiv preprint arXiv:2607.03988, 2026. [Online]. Available: https://arxiv.org/abs/2607.03988.
-61. A. Kudaloor and A. Aijaz, "Toward Quantum-Safe 6G: Experimental Evaluation of Post-Quantum Cryptography Techniques," arXiv preprint arXiv:2605.06881, 2026. [Online]. Available: https://arxiv.org/abs/2605.06881.
-62. J. A. Montenegro, R. Rios and J. Lopez-Cerezo, "A performance evaluation framework for post-quantum TLS," Future Generation Computer Systems, vol. 175, p. 108062, 2026. [Online]. Available: https://doi.org/10.1016/j.future.2025.108062.
-63. M. J. Kannwischer, "Keynote: mlkem-native & mldsa-native: Open-Source High-Speed High-Assurance PQC," in Proceedings of the 2025 Cloud Computing Security Workshop (CCSW), 2025. [Online]. Available: https://doi.org/10.1145/3733812.3765539.
-64. Open Quantum Safe Project, "liboqs 0.16.0: C library for prototyping and experimenting with quantum-resistant cryptography," GitHub, 9 July 2026. [Online]. Available: https://github.com/open-quantum-safe/liboqs/releases/tag/0.16.0. [Accessed 10 October 2026].
-65. A. G. Schemitt, H. F. d. Silva, R. C. Lunardi, D. Kreutz, R. B. Mansilha and A. F. Zorzo, "Assessing the Impact of Post-Quantum Digital Signature Algorithms on Blockchains," arXiv preprint arXiv:2510.09271, 2025. [Online]. Available: https://arxiv.org/abs/2510.09271.
-66. P. Juaristi, I. Agudo, R. Rios and L. Ricci, "Benchmarking Post-quantum Cryptography in Ethereum-Based Blockchains," in Lecture Notes in Computer Science, 2025. [Online]. Available: https://doi.org/10.1007/978-3-031-82349-7_23.
-67. S. A. Holmes, "Impact of Post-Quantum Signatures on Blockchain and DLT Systems," in Distributed Ledger Technology Workshop (DLT 2023), CEUR Workshop Proceedings, Bologna, Italy, 2023.
-68. B. Saviozzi, R. Singh, A. Lele and H. Tewari, "Building Quantum-Resilient Blockchains with ML-DSA Digital Signature Integration," in 2026 4th International Conference on Advanced Network Technologies and Applications (APAN), 2026. [Online]. Available: https://doi.org/10.1109/apan70967.2026.11709608.
-69. M. Arakawa, "Post-Quantum Cryptography for Verifiable Credentials: Comprehensive Performance Evaluation Including Selective Disclosure," TechRxiv preprint, 2025. [Online]. Available: https://doi.org/10.36227/techrxiv.176118722.22701360/v1.
-70. M. Kirubakaran and V. Vijayarajan, "PQ-FundusChain: a postquantum blockchain framework for secure and privacy-preserving retinal fundus image sharing in teleophthalmology," Frontiers in Digital Health, vol. 8, p. 1933562, 2026. [Online]. Available: https://doi.org/10.3389/fdgth.2026.1933562.
-71. A. Olushola and S. P. Meenakshi, "Design and implementation of an authenticated post-quantum session protocol using ML-KEM (Kyber), ML-DSA (Dilithium), and AES-256-GCM," Frontiers in Physics, vol. 13, p. 1723966, 2026. [Online]. Available: https://doi.org/10.3389/fphy.2025.1723966.
-72. L. F. Prikutse, R. E. Turkson, A. Yussiff, A. Yussiff and M. G. Asante-Mensah, "A Commitment-Based Hybrid Post-Quantum Cryptographic Model for Multi-File Cloud Storage," arXiv preprint arXiv:2608.13138, 2026. [Online]. Available: https://arxiv.org/abs/2608.13138.
-73. G. Fabrizio, A. Sperotto and R. Van Rijswijk-Deij, "Measuring The Impact of Post-Quantum Cryptography on Complex Applications: A Case Study on Federated Identity Management," in 2025 9th Network Traffic Measurement and Analysis Conference (TMA), 2025. [Online]. Available: https://doi.org/10.23919/tma66427.2025.11097002.
-74. Y. Kotukh, M. Korobchynskyi, M. Rudenko, A. Honcharuk, I. Kiris and V. Voitko, "Type Safe OCaml Bindings for the Open Quantum Safe Post-Quantum Cryptography Library," in 2026 16th International Conference on Advanced Computer Information Technologies (ACIT), 2026. [Online]. Available: https://doi.org/10.1109/acit69831.2026.11699949.
-75. A. Shaw, "quantum-safe: Bridging the Post-Quantum Production Gap with a Hybrid-by-Default Python Cryptography Library," arXiv preprint arXiv:2605.17061, 2026. [Online]. Available: https://arxiv.org/abs/2605.17061.
-76. C. M. Frost, "A Reproducibility Protocol for Cross-Implementation Evaluation of Post-Quantum ACVP Test Vectors," arXiv preprint arXiv:2608.13784, 2026. [Online]. Available: https://arxiv.org/abs/2608.13784.
+## 14. Bibliography
+
+1. C. Gidney (2025). How to factor 2048 bit RSA integers with less than a million noisy qubits. *arXiv preprint arXiv:2505.15917*. https://arxiv.org/abs/2505.15917
+2. M. Mosca and M. Piani (2026). Quantum Threat Timeline Report 2025. Global Risk Institute, Toronto. https://globalriskinstitute.org/publication/quantum-threat-timeline-report-2025b/
+3. National Institute of Standards and Technology (2024). Module-Lattice-Based Digital Signature Standard (FIPS 204). U.S. Department of Commerce, Gaithersburg, MD. https://doi.org/10.6028/NIST.FIPS.204
+4. National Institute of Standards and Technology (2024). Module-Lattice-Based Key-Encapsulation Mechanism Standard (FIPS 203). U.S. Department of Commerce, Gaithersburg, MD. https://doi.org/10.6028/NIST.FIPS.203
+5. National Institute of Standards and Technology (2024). Transition to Post-Quantum Cryptography Standards (NIST IR 8547, Initial Public Draft). NIST, Gaithersburg, MD. https://doi.org/10.6028/NIST.IR.8547.ipd
+6. Aletihad News Center (2025). UAE approves National Encryption Policy, issues executive regulation. Aletihad. https://en.aletihad.ae/news/uae/4625341/uae-approves-national-encryption-policy--issues-executive-re
+7. European Data Protection Board (2026). Guidelines 02/2025 on processing of personal data through blockchain technologies, Version 2.0. EDPB, Brussels. https://www.edpb.europa.eu/system/files/2026-07/edpb_guidelines_202502_blockchain_v2_en.pdf
+8. IPFS Documentation (2025). Privacy and encryption. IPFS Docs. https://docs.ipfs.tech/concepts/privacy-and-encryption/
+9. Google Quantum AI and Collaborators (2025). Quantum error correction below the surface code threshold. *Nature*, vol. 638, no. 8052, pp. 920–926. https://doi.org/10.1038/s41586-024-08449-y
+10. IBM Quantum (2025). IBM lays out clear path to fault-tolerant quantum computing. IBM Quantum Computing Blog. https://www.ibm.com/quantum/blog/large-scale-ftqc
+11. National Institute of Standards and Technology (2024). Stateless Hash-Based Digital Signature Standard (FIPS 205). U.S. Department of Commerce, Gaithersburg, MD. https://doi.org/10.6028/NIST.FIPS.205
+12. R. Perlner (2025). FIPS 206 Status Update: FN-DSA (Falcon). NIST Computer Security Resource Center. https://csrc.nist.gov/csrc/media/presentations/2025/fips-206-fn-dsa-(falcon)/images-media/fips_206-perlner_2.1.pdf
+13. National Institute of Standards and Technology (2025). Status Report on the Fourth Round of the NIST Post-Quantum Cryptography Standardization Process (NIST IR 8545). NIST, Gaithersburg, MD. https://doi.org/10.6028/NIST.IR.8545
+14. National Institute of Standards and Technology (2025). Considerations for Achieving Cryptographic Agility: Strategies and Practices (NIST CSWP 39). NIST, Gaithersburg, MD. https://doi.org/10.6028/NIST.CSWP.39
+15. National Cyber Security Centre (2025). Timelines for migration to post-quantum cryptography. NCSC Guidance. https://www.ncsc.gov.uk/guidance/pqc-migration-timelines
+16. NIS Cooperation Group (2025). A Coordinated Implementation Roadmap for the Transition to Post-Quantum Cryptography. European Commission, Shaping Europe's Digital Future. https://digital-strategy.ec.europa.eu/en/library/coordinated-implementation-roadmap-transition-post-quantum-cryptography
+17. Advanced Technology Research Council (2026). UAE Cyber Security Council partners with ATRC to advance national post-quantum security transition. ATRC News. https://www.atrc.gov.ae/news/uae-cyber-security-council-partners-atrc-advance-national-post-quantum-security-transition
+18. T. Mallick, M. Zeldin, M. Cenk and C. Nita-Rotaru (2025). Quantum Disruption: An SOK of How Post-Quantum Attackers Reshape Blockchain Security and Performance. *arXiv preprint arXiv:2512.13333*. https://arxiv.org/abs/2512.13333
+19. J. Gomes, S. Khan and D. Svetinovic (2023). Fortifying the Blockchain: A Systematic Review and Classification of Post-Quantum Consensus Solutions for Enhanced Security and Resilience. *IEEE Access*, vol. 11, pp. 74088–74100. https://doi.org/10.1109/ACCESS.2023.3296559
+20. Y. Wang and E. S. Ismail (2025). A Review on the Advances, Applications, and Future Prospects of Post-Quantum Cryptography in Blockchain and IoT. *IEEE Access*, vol. 13, pp. 112962–112977. https://doi.org/10.1109/ACCESS.2025.3584473
+21. S. Al-Janabi (2025). Post-Quantum Blockchain: Challenges and Opportunities. *arXiv preprint arXiv:2508.17071*. https://arxiv.org/abs/2508.17071
+22. R. Campbell (2026). Hybrid Post-Quantum Signatures for Bitcoin and Ethereum: A Protocol-Level Integration Strategy. *The Journal of The British Blockchain Association*, vol. 9, no. 1, pp. 1–13. https://doi.org/10.31585/jbba-9-1-(2)2026
+23. M. Vidaković and K. Miličević (2023). Performance and Applicability of Post-Quantum Digital Signature Algorithms in Resource-Constrained Environments. *Algorithms*, vol. 16, no. 11, pp. 518. https://doi.org/10.3390/a16110518
+24. E. D. Demir, B. Bilgin and M. C. Onbasli (2025). Performance Analysis and Industry Deployment of Post-Quantum Cryptography Algorithms. *arXiv preprint arXiv:2503.12952*. https://arxiv.org/abs/2503.12952
+25. W. Beullens (2022). Breaking Rainbow Takes a Weekend on a Laptop. In *Advances in Cryptology - CRYPTO 2022, Lecture Notes in Computer Science, vol. 13508*, pp. 464–479. https://doi.org/10.1007/978-3-031-15979-4_16
+26. P. Thanalakshmi, A. Rishikhesh, J. M. Marceline, G. P. Joshi and W. Cho (2023). A Quantum-Resistant Blockchain System: A Comparative Analysis. *Mathematics*, vol. 11, no. 18, pp. 3947. https://doi.org/10.3390/math11183947
+27. The Linux Foundation (2024). Announcing the Post-Quantum Cryptography Alliance (PQCA). Linux Foundation Press Release. https://www.linuxfoundation.org/press/announcing-the-post-quantum-cryptography-alliance-pqca
+28. IPFS Documentation (2025). Persistence, permanence, and pinning. IPFS Docs. https://docs.ipfs.tech/concepts/persistence/
+29. S. Khaleelullah, S. T. Vangapalli, M. Gaddam, V. S. Hanumakonda and U. K. G. Gangapuram (2023). Verification of Academic Records Using Hyperledger Fabric and IPFS. In *2023 3rd International Conference on Pervasive Computing and Social Networking (ICPCSN)*, pp. 210–217. https://doi.org/10.1109/ICPCSN58827.2023.00040
+30. R. A. Jaafar and S. N. Alsaad (2023). Enhancing Educational Certificate Verification With Blockchain and IPFS: A Decentralized Approach Using Hyperledger Fabric. *TEM Journal*, vol. 12, no. 4, pp. 2385–2395. https://doi.org/10.18421/TEM124-51
+31. R. Barnes, K. Bhargavan, B. Lipp and C. A. Wood (2022). Hybrid Public Key Encryption (RFC 9180). Internet Research Task Force (IRTF). https://doi.org/10.17487/RFC9180
+32. M. Barbosa, D. Connolly, J. D. Duarte, A. Kaiser, P. Schwabe, K. Varner and B. Westerbaan (2024). X-Wing: The Hybrid KEM You've Been Looking For. *IACR Communications in Cryptology*, vol. 1, no. 1. https://doi.org/10.62056/a3qj89n4e
+33. World Wide Web Consortium (2025). Verifiable Credentials Data Model v2.0. W3C Recommendation. https://www.w3.org/TR/vc-data-model-2.0/
+34. D. Fett, K. Yasuda and B. Campbell (2025). Selective Disclosure for JSON Web Tokens (RFC 9901). Internet Engineering Task Force (IETF). https://www.rfc-editor.org/rfc/rfc9901
+35. International Organization for Standardization (2021). ISO/IEC 18013-5:2021 Personal identification - ISO-compliant driving licence - Part 5: Mobile driving licence (mDL) application. ISO/IEC, Geneva. https://www.iso.org/standard/69084.html
+36. T. Wood, K. Thomas, M. Dean, S. Kannan and R. Learney (2024). Towards Post-Quantum Verifiable Credentials. In *Proceedings of the 19th International Conference on Availability, Reliability and Security (ARES 2024)*, pp. 1–10. https://doi.org/10.1145/3664476.3669932
+37. J. Bootle, V. Lyubashevsky, N. K. Nguyen and A. Sorniotti (2023). A Framework for Practical Anonymous Credentials from Lattices. In *Advances in Cryptology - CRYPTO 2023, Lecture Notes in Computer Science*, pp. 384–417. https://doi.org/10.1007/978-3-031-38545-2_13
+38. D. Margaria, A. Pino, A. Vesco, G. D’Alconzo, A. J. Di Scala, E. Guglielmino and C. Sanna (2025). Implementation of a Post-Quantum Anonymous Verifiable Credential Framework. In *2025 IEEE Symposium on Computers and Communications (ISCC)*, pp. 1–6. https://doi.org/10.1109/iscc65549.2025.11325782
+39. A. Pino, D. Margaria and A. Vesco (2024). On PQ/T Hybrid Verifiable Credentials and Presentations to Build Trust in IoT Systems. In *2024 9th International Conference on Smart and Sustainable Technologies (SpliTech)*, pp. 1–6. https://doi.org/10.23919/splitech61897.2024.10612295
+40. A. Solavagione and A. Vesco (2025). Transition of Self-Sovereign Identity to Post-Quantum Cryptography. In *2025 International Conference on Quantum Communications, Networking, and Computing (QCNC)*, pp. 174–181. https://doi.org/10.1109/qcnc64685.2025.00035
+41. A. Holcomb, G. Pereira, B. Das and M. Mosca (2021). PQFabric: A Permissioned Blockchain Secure from Both Classical and Quantum Attacks. In *2021 IEEE International Conference on Blockchain and Cryptocurrency (ICBC)*, pp. 1–9. https://doi.org/10.1109/ICBC51069.2021.9461070
+42. S. Abbas, A. Sultana and G. Kaddoum (2025). Quantum-Safe Blockchain in Hyperledger Fabric. *IEEE Networking Letters*, vol. 7, no. 1, pp. 61–65. https://doi.org/10.1109/lnet.2024.3522966
+43. V. K. Kasula, S. B. Rakki and R. Banoth (2025). Enhancing Hyperledger Fabric Security with Lightweight Post-Quantum Cryptography and National Cryptographic Algorithms. In *2025 37th Conference of Open Innovations Association (FRUCT)*, pp. 93–99. https://doi.org/10.23919/FRUCT65909.2025.11008110
+44. S. Grebnev, Y. Melnichuk, I. Poltavskaya, O. Turchenko, A. Kurochkin and A. Polubelov (2025). Analysis and challenges of implementing post-quantum cryptographic algorithms in Ethereum and Hyperledger Fabric networks. *Journal of Computer Virology and Hacking Techniques*, vol. 22, no. 1, pp. 3. https://doi.org/10.1007/s11416-025-00585-x
+45. N. L. Ouadrassi, M. Said Boukhryss, A. Azmani and K. J. Hassani (2026). Toward Quantum-Safe Permissioned Blockchains: Evaluating Hybrid ML-DSA-65/ECDSA Signatures on Hyperledger Fabric. *IEEE Access*, vol. 14, pp. 146672–146703. https://doi.org/10.1109/access.2026.3735938
+46. M. Kuzlu, M. Pipattanasomporn, L. Gurses and S. Rahman (2019). Performance Analysis of a Hyperledger Fabric Blockchain Framework: Throughput, Latency and Scalability. In *2019 IEEE International Conference on Blockchain (Blockchain)*, pp. 536–540. https://doi.org/10.1109/blockchain.2019.00003
+47. T. Zhukabayeva, A. u. Rehman, N. Tariq and E. Benkhelifa (2024). Hyperledger Fabric Based Post Quantum Cryptography Healthcare Application Using Discrete Event Simulation. *IEEE Access*. https://doi.org/10.1109/access.2024.3513153
+48. Hyperledger Foundation (2024). What's new in Hyperledger Fabric v3.0. Hyperledger Fabric Documentation. https://hyperledger-fabric.readthedocs.io/en/release-3.0/whatsnew.html
+49. J. Massimo, P. Kampanakis, S. Turner and B. Westerbaan (2025). Internet X.509 Public Key Infrastructure - Algorithm Identifiers for the Module-Lattice-Based Digital Signature Algorithm (ML-DSA) (RFC 9881). Internet Engineering Task Force (IETF). https://www.rfc-editor.org/rfc/rfc9881
+50. The Go Authors (2026). Go 1.27 Release Notes. The Go Programming Language. https://go.dev/doc/go1.27
+51. D. Commey, B. Appiah, G. S. Klogo, W. Bagyl-Bac, J. D. Gadze, Y. Alsenani and G. V. Crosby (2025). Performance Analysis and Deployment Considerations of Post-Quantum Cryptography for Consumer Electronics. *arXiv preprint arXiv:2505.02239*. https://arxiv.org/abs/2505.02239
+52. J. Algar-Fernandez, A. Villacís-Vanegas, Y. Amaro-Aular and M.-D. Cano (2026). Benchmarking Post-Quantum Signatures and KEMs on General-Purpose CPUs Using a TCP Client–Server Testbed. *Computers*, vol. 15, no. 2, pp. 116. https://doi.org/10.3390/computers15020116
+53. D.-L. Lucaciu and D. E. Popescu (2026). Cross-Platform Performance and Security Evaluation of Post-Quantum Cryptographic Algorithms on Resource-Constrained Devices. *Applied Sciences*, vol. 16, no. 12, pp. 5781. https://doi.org/10.3390/app16125781
+54. Y. Oleksiichuk (2026). Empirical Performance Evaluation of NIST Post-Quantum Cryptographic Algorithms ML-KEM, ML-DSA, and SLH-DSA across JDK Versions. *Cybersecurity: Education, Science, Technique*, vol. 1, no. 33, pp. 165. https://doi.org/10.28925/2663-4023.2026.33.1210
+55. R. Chhetri, S. Dhakal and A. Gautam (2026). Benchmarking NIST-Standardised ML-KEM and ML-DSA on ARM Cortex-M0+: Latency, Rejection-Sampling Variance, and Memory on the RP2040. *arXiv preprint arXiv:2603.19340*. https://arxiv.org/abs/2603.19340
+56. N. Puch, C. H. Ta and M. Beckel (2026). Benchmarking Post-Quantum Cryptography in Lightweight Virtualization Environments on Embedded Hardware. *arXiv preprint arXiv:2609.23902*. https://arxiv.org/abs/2609.23902
+57. O. Gillot, W. J. Buchanan and M. G. Tehrani (2026). Energy Consumption of Post-Quantum Cryptography on Constrained and General-Purpose Architectures. *Cryptography*, vol. 10, no. 4, pp. 55. https://doi.org/10.3390/cryptography10040055
+58. J. Lopez, V. Cadena and M. S. Rahman (2025). Evaluating Post-Quantum Cryptographic Algorithms on Resource-Constrained Devices. *arXiv preprint arXiv:2507.08312*. https://arxiv.org/abs/2507.08312
+59. S. Hoque, A. Aydeger, E. Zeydan and M. Liyanage (2025). Analysis of Post-Quantum Cryptography in User Equipment in 5G and Beyond. *arXiv preprint arXiv:2507.17074*. https://arxiv.org/abs/2507.17074
+60. S. Hoque and A. Aydeger (2026). Energy-Aware System-Level Evaluation of Post-Quantum TLS on Embedded User Equipment over a Disaggregated 5G Network. *arXiv preprint arXiv:2607.03988*. https://arxiv.org/abs/2607.03988
+61. A. Kudaloor and A. Aijaz (2026). Toward Quantum-Safe 6G: Experimental Evaluation of Post-Quantum Cryptography Techniques. *arXiv preprint arXiv:2605.06881*. https://arxiv.org/abs/2605.06881
+62. J. A. Montenegro, R. Rios and J. Lopez-Cerezo (2026). A performance evaluation framework for post-quantum TLS. *Future Generation Computer Systems*, vol. 175, pp. 108062. https://doi.org/10.1016/j.future.2025.108062
+63. M. J. Kannwischer (2025). Keynote: mlkem-native & mldsa-native: Open-Source High-Speed High-Assurance PQC. In *Proceedings of the 2025 Cloud Computing Security Workshop (CCSW)*. https://doi.org/10.1145/3733812.3765539
+64. Open Quantum Safe Project (2026). liboqs 0.16.0: C library for prototyping and experimenting with quantum-resistant cryptography. GitHub. https://github.com/open-quantum-safe/liboqs/releases/tag/0.16.0
+65. A. G. Schemitt, H. F. d. Silva, R. C. Lunardi, D. Kreutz, R. B. Mansilha and A. F. Zorzo (2025). Assessing the Impact of Post-Quantum Digital Signature Algorithms on Blockchains. *arXiv preprint arXiv:2510.09271*. https://arxiv.org/abs/2510.09271
+66. P. Juaristi, I. Agudo, R. Rios and L. Ricci (2025). Benchmarking Post-quantum Cryptography in Ethereum-Based Blockchains. In *Lecture Notes in Computer Science*, pp. 340–353. https://doi.org/10.1007/978-3-031-82349-7_23
+67. S. A. Holmes (2023). Impact of Post-Quantum Signatures on Blockchain and DLT Systems. In *Distributed Ledger Technology Workshop (DLT 2023), CEUR Workshop Proceedings*.
+68. B. Saviozzi, R. Singh, A. Lele and H. Tewari (2026). Building Quantum-Resilient Blockchains with ML-DSA Digital Signature Integration. In *2026 4th International Conference on Advanced Network Technologies and Applications (APAN)*, pp. 1–6. https://doi.org/10.1109/apan70967.2026.11709608
+69. M. Arakawa (2025). Post-Quantum Cryptography for Verifiable Credentials: Comprehensive Performance Evaluation Including Selective Disclosure. *TechRxiv preprint*. https://doi.org/10.36227/techrxiv.176118722.22701360/v1
+70. M. Kirubakaran and V. Vijayarajan (2026). PQ-FundusChain: a postquantum blockchain framework for secure and privacy-preserving retinal fundus image sharing in teleophthalmology. *Frontiers in Digital Health*, vol. 8, pp. 1933562. https://doi.org/10.3389/fdgth.2026.1933562
+71. A. Olushola and S. P. Meenakshi (2026). Design and implementation of an authenticated post-quantum session protocol using ML-KEM (Kyber), ML-DSA (Dilithium), and AES-256-GCM. *Frontiers in Physics*, vol. 13, pp. 1723966. https://doi.org/10.3389/fphy.2025.1723966
+72. L. F. Prikutse, R. E. Turkson, A.-S. Yussiff, A.-L. Yussiff and M. G. Asante-Mensah (2026). A Commitment-Based Hybrid Post-Quantum Cryptographic Model for Multi-File Cloud Storage. *arXiv preprint arXiv:2608.13138*. https://arxiv.org/abs/2608.13138
+73. G. Fabrizio, A. Sperotto and R. Van Rijswijk-Deij (2025). Measuring The Impact of Post-Quantum Cryptography on Complex Applications: A Case Study on Federated Identity Management. In *2025 9th Network Traffic Measurement and Analysis Conference (TMA)*, pp. 1–10. https://doi.org/10.23919/tma66427.2025.11097002
+74. Y. Kotukh, M. Korobchynskyi, M. Rudenko, A. Honcharuk, I. Kiris and V. Voitko (2026). Type Safe OCaml Bindings for the Open Quantum Safe Post-Quantum Cryptography Library. In *2026 16th International Conference on Advanced Computer Information Technologies (ACIT)*, pp. 981–985. https://doi.org/10.1109/acit69831.2026.11699949
+75. A. Shaw (2026). quantum-safe: Bridging the Post-Quantum Production Gap with a Hybrid-by-Default Python Cryptography Library. *arXiv preprint arXiv:2605.17061*. https://arxiv.org/abs/2605.17061
+76. C. M. Frost (2026). A Reproducibility Protocol for Cross-Implementation Evaluation of Post-Quantum ACVP Test Vectors. *arXiv preprint arXiv:2608.13784*. https://arxiv.org/abs/2608.13784
+77. E. Androulaki, A. Barger, V. Bortnikov, C. Cachin, K. Christidis, A. De Caro, D. Enyeart, C. Ferris, G. Laventman, Y. Manevich, S. Muralidharan, C. Murthy, B. Nguyen, M. Sethi, G. Singh, K. Smith, A. Sorniotti, C. Stathakopoulou, M. Vukolić, S. W. Cocco and J. Yellick (2018). Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains. In *Proc. 13th EuroSys Conference (EuroSys '18)*, pp. 30. https://doi.org/10.1145/3190508.3190538
+78. T. T. A. Dinh, J. Wang, G. Chen, R. Liu, B. C. Ooi and K.-L. Tan (2017). BLOCKBENCH: A Framework for Analyzing Private Blockchains. In *Proc. 2017 ACM International Conference on Management of Data (SIGMOD '17)*, pp. 1085–1100. https://doi.org/10.1145/3035918.3064033
+79. P. Thakkar, S. Nathan and B. Viswanathan (2018). Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform. In *2018 IEEE 26th International Symposium on Modeling, Analysis, and Simulation of Computer and Telecommunication Systems (MASCOTS)*, pp. 264–276. https://doi.org/10.1109/MASCOTS.2018.00034
+80. X. Piao, H. Ding and H. Song (2023). Performance Analysis of Endorsement in Hyperledger Fabric Concerning Endorsement Policies. *Electronics*, vol. 12, no. 20, pp. 4322. https://doi.org/10.3390/electronics12204322
+81. C. Gorenflo, S. Lee, L. Golab and S. Keshav (2019). FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second. In *2019 IEEE International Conference on Blockchain and Cryptocurrency (ICBC)*, pp. 455–463. https://doi.org/10.1109/BLOC.2019.8751452
+82. Q. Nasir, I. A. Qasse, M. Abu Talib and A. B. Nassif (2018). Performance Analysis of Hyperledger Fabric Platforms. *Security and Communication Networks*, vol. 2018, pp. 3976093. https://doi.org/10.1155/2018/3976093
+83. C. Michelagnoli (2023). Quantum-resistant Blockchain: Introduction of Post-Quantum Cryptography in Hyperledger Fabric. M.Sc. thesis, Politecnico di Torino, Turin, Italy. https://webthesis.biblio.polito.it/26857/1/tesi.pdf
+84. J. Lee (2025). Towards Quantum-Safe Smart Contracts on Hyperledger Fabric. M.Sc. thesis, Delft University of Technology, Delft, the Netherlands. https://repository.tudelft.nl/record/uuid:cec0b1bf-fc85-4d58-a4c0-6a81e184a3a7
+85. B. Schroeder, A. Wierman and M. Harchol-Balter (2006). Open Versus Closed: A Cautionary Tale. In *Proc. 3rd Symposium on Networked Systems Design and Implementation (NSDI '06)*, pp. 239–252. https://www.usenix.org/conference/nsdi-06/open-versus-closed-cautionary-tale
 
 ---
 
-## 13. Appendix
+## 15. Appendix
 
-### 13.1 Gantt Chart
+### 15.1 Gantt Chart
 
-Figure 13-1 shows the project schedule with the progress of every task.
+Figure 15-1 shows the project schedule with the progress of every task.
 
-*Figure 13-1. Project Gantt chart, Fall 2026*
+*Figure 15-1. Project Gantt chart, Fall 2026*
 
-### 13.2 Source Code Repositories
+### 15.2 Source Code Repositories
 
-The source code of QChain is kept in the team's GitHub organisation; Table 13-I lists the public repositories.
+The source code of QChain is kept in the team's GitHub organisation; Table 15-I lists the public repositories.
 
-**Table 13-I. QCHAIN SOURCE CODE REPOSITORIES**
+**Table 15-I. QCHAIN SOURCE CODE REPOSITORIES**
 
 | Repository | Content | Address |
 | --- | --- | --- |
@@ -1472,5 +1799,10 @@ The source code of QChain is kept in the team's GitHub organisation; Table 13-I 
 | qchain-portal | QPortal web portal | [github.com/teamqchain/qchain-portal](https://github.com/teamqchain/qchain-portal) |
 | qchain-wallet | QWallet mobile wallet | [github.com/teamqchain/qchain-wallet](https://github.com/teamqchain/qchain-wallet) |
 | qchain-kpi | Benchmarking harness, data, analysis, figures and tables | [github.com/teamqchain/qchain-kpi](https://github.com/teamqchain/qchain-kpi) |
+| qchain-fabric-performance | Fabric performance study: harness, data, analysis and figures | [github.com/teamqchain/qchain-fabric-performance](https://github.com/teamqchain/qchain-fabric-performance) |
 | qchain-docs | Project documentation and reports | [github.com/teamqchain/qchain-docs](https://github.com/teamqchain/qchain-docs) |
 | teamqchain.github.io | Project website | [github.com/teamqchain/teamqchain.github.io](https://github.com/teamqchain/teamqchain.github.io) |
+
+---
+
+**Last Updated:** 24th November 2026
